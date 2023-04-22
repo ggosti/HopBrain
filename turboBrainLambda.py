@@ -67,6 +67,8 @@ plt.figure()
 plt.imshow(dist)
 plt.show()
 
+np.random.seed(8792)
+
 alphas = []
 
 runs = 10
@@ -85,7 +87,6 @@ for lambd in lambdas:
     #plt.title('J>0.04')
     #plt.imshow(J>0.04)
     #plt.show()
-    np.random.seed(8792)
     
 
     N=J.shape[0]

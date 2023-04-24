@@ -65,17 +65,34 @@ dist2=np.sqrt(euc2(coords))
 
 plt.figure()
 plt.imshow(dist)
+
+lambd = 0.18 # mm^(-1)
+J = np.exp(-lambd*dist)
+plt.figure()
+plt.title('J = np.exp(-0.18*dist) ')
+plt.imshow(J)
+
+plt.figure()
+plt.title('J>0.04')
+plt.imshow(J>0.04)
+plt.show()
+
 plt.show()
 
 np.random.seed(8792)
 
 alphas = []
 
-runs = 10
+runs = 6
 passi = 100#200
-lambdas = np.arange(0.09,0.30,0.01)
+lambdas = np.arange(0.07,0.30,0.01)
 
-#lambd = 0.18 # mm^(-1)
+alphaSrRuns = []
+lambdasRuns = []
+alphasSrAggrRun = []
+runsList = []
+
+
 for lambd in lambdas:
     print('Lambda',lambd)
     J = np.exp(-lambd*dist)
@@ -109,7 +126,7 @@ for lambd in lambdas:
         Cdt1 = np.mean(states[r,1:,:]*states[r,:-1,:],axis=1)
         cycle1ConvTime.append(np.argmax(Cdt1>=1.))
 
-        if r<3:    
+        if r<5:    
             f,axs=plt.subplots(2)
             #plt.figure()
             axs[0].imshow(states[r,:,:].T)
@@ -205,7 +222,7 @@ for lambd in lambdas:
 
     f,ax=plt.subplots(5,2)
 
-    for r in range(5):
+    for r in range(runs):
         rs = []
         binnedBd = [] 
         for ra,rb in zip(bins[:-1],bins[1:]):
@@ -214,10 +231,7 @@ for lambd in lambdas:
             rs.append(0.5*(ra+rb))
         binnedBd = np.array(binnedBd)
         
-        ax[r,1].scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
-        ax[r,1].scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
-        ax[r,1].plot([2,3.5],[-0.1,-0.1 -(1.5*0.5)],'r')
-        #plt.xlim((2,4))
+
         x=np.log(rs)
         y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
         gate= np.logical_and(np.logical_and(x>2, x<3.5),np.isfinite(y))
@@ -230,17 +244,10 @@ for lambd in lambdas:
         # Direct least square regression
         alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
         print('coef log B(r)',alpha)
-        ax[r,1].plot(x, alpha[0]*x + alpha[1], '-g')
-        ax[r,1].set_ylabel('log( B(r) )')
-        ax[r,1].set_xlabel('log( r )')
-        ax[r,1].set_xlim((1,5.5))
-        ax[r,1].set_ylim((-12,1))
-        ax[r,1].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+
 
 
         binnedSr = 2*(binnedBd[0] - binnedBd)
-        ax[r,0].scatter(np.log(rs),np.log(binnedSr ),alpha=0.4)
-        ax[r,0].plot([2,3.5],[-0.1,-0.1 + 1.5*0.5],'r')
         y=np.log(binnedSr)
         y=y[gate]
         A = np.vstack([x, np.ones(len(x))]).T
@@ -248,14 +255,33 @@ for lambd in lambdas:
         # Direct least square regression
         alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
         print('coef log S(r)',alpha)
+        alphaSrRuns.append(alpha)
+        lambdasRuns.append(lambd)
+        runsList.append(r)
 
-        ax[r,0].plot(x, alpha[0]*x + alpha[1], '-g')
-        ax[r,0].set_ylabel('log( S(r) )')
-        ax[r,0].set_xlabel('log( r )')
-        ax[r,0].set_xlim((1,5.5))
-        ax[r,0].set_ylim((-5,2))
-        ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
-        #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+
+        if r < 5:
+            #draw single run Br
+            ax[r,1].scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
+            ax[r,1].scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
+            ax[r,1].plot([2,3.5],[-0.1,-0.1 -(1.5*0.5)],'r')
+            #plt.xlim((2,4))
+            ax[r,1].plot(x, alpha[0]*x + alpha[1], '-g')
+            ax[r,1].set_ylabel('log( B(r) )')
+            ax[r,1].set_xlabel('log( r )')
+            ax[r,1].set_xlim((1,5.5))
+            ax[r,1].set_ylim((-12,1))
+            ax[r,1].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+            # draw single run Sr
+            ax[r,0].scatter(np.log(rs),np.log(binnedSr ),alpha=0.4)
+            ax[r,0].plot([2,3.5],[-0.1,-0.1 + 1.5*0.5],'r')            
+            ax[r,0].plot(x, alpha[0]*x + alpha[1], '-g')
+            ax[r,0].set_ylabel('log( S(r) )')
+            ax[r,0].set_xlabel('log( r )')
+            ax[r,0].set_xlim((1,5.5))
+            ax[r,0].set_ylim((-5,2))
+            ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+            #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
     
     f,ax=plt.subplots(1,2)
     rs = []
@@ -328,6 +354,7 @@ for lambd in lambdas:
     ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
     ax[0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
     alphas.append(alpha[0])
+    alphasSrAggrRun = alphasSrAggrRun + [alpha[0]]*runs 
     plt.savefig('structure'+str(lambd)+'.pdf')
 
 df = pd.DataFrame(
@@ -342,3 +369,10 @@ plt.axvline(x = 0.18, color='r')
 plt.ylabel('slope $\log S(r)$')
 plt.xlabel('lambda (mm$^{-1}$)')
 plt.show()
+
+df0 = pd.DataFrame(
+    {'alphaRuns':alphaSrRuns,
+     'lambdas':lambdasRuns,
+      'alphaAgr':alphasSrAggrRun,
+      'run':runsList})
+df0.to_csv('parametersRuns.csv', index=False)

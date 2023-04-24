@@ -85,7 +85,7 @@ alphas = []
 
 runs = 6
 passi = 100#200
-lambdas = np.arange(0.07,0.30,0.01)
+lambdas = np.arange(0.08,0.30,0.01)
 
 alphaSrRuns = []
 lambdasRuns = []

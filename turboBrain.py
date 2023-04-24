@@ -2,9 +2,9 @@
 # coding: utf-8
 
 
-import getCycles
+#import getCycles
 import numpy as np
-import networkx as nx
+#import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -20,11 +20,11 @@ def trans(sigma_path0,net1,N,typ = 0, thr = 0):
     typ=1 --> {-1,1}    typ=0 --> {0,1} 
     """
     sigma_path1 = net1.dot(sigma_path0.T)
-    print(sigma_path1)
+    #print(sigma_path1)
     sigma_path1 [sigma_path1  == 0] = 0.000001
-    print(sigma_path1)
+    #print(sigma_path1)
     sigma_path1 = (1-typ+np.sign(sigma_path1 +thr))/(2-typ)
-    print(sigma_path1)
+    #print(sigma_path1)
     return sigma_path1.T   
 
 
@@ -66,7 +66,7 @@ dist2=np.sqrt(euc2(coords))
 plt.figure()
 plt.imshow(dist)
 
-lamda = 0.14
+lamda = 0.24
 J = np.exp(-lamda*dist)
 plt.figure()
 plt.title('J = np.exp(-0.18*dist) ')
@@ -81,7 +81,7 @@ plt.imshow(J>0.04)
 
 np.random.seed(8792)
 
-runs = 40
+runs = 5
 passi = 200
 N=J.shape[0]
 print('runs',runs)
@@ -95,7 +95,7 @@ for r in range(runs):
     states[r,0,:] = s0
 
     for t in range(1,passi):
-        s1 = getCycles.transPy(s0,J,N,typ = 1, thr = 0)
+        s1 = trans(s0,J,N,typ = 1, thr = 0) #getCycles.transPy(s0,J,N,typ = 1, thr = 0)
         #print(s1)
         s0=s1.T
         states[r,t,:] = s1.T

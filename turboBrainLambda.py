@@ -83,7 +83,7 @@ np.random.seed(8792)
 
 alphas = []
 
-runs = 6
+runs = 40
 passi = 100#200
 lambdas = np.arange(0.08,0.30,0.01)
 
@@ -368,7 +368,7 @@ plt.plot(lambdas,alphas)
 plt.axvline(x = 0.18, color='r')
 plt.ylabel('slope $\log S(r)$')
 plt.xlabel('lambda (mm$^{-1}$)')
-plt.show()
+#plt.show()
 
 df0 = pd.DataFrame(
     {'alphaRuns':alphaSrRuns,

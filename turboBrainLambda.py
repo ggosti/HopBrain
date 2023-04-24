@@ -255,7 +255,7 @@ for lambd in lambdas:
         # Direct least square regression
         alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
         print('coef log S(r)',alpha)
-        alphaSrRuns.append(alpha)
+        alphaSrRuns.append(alpha[0])
         lambdasRuns.append(lambd)
         runsList.append(r)
 

@@ -10,6 +10,7 @@ import pandas as pd
 from scipy.spatial import distance
 import time
 
+import turboBrainUtils as tb 
 
 
 # # Parcellizzazione
@@ -35,53 +36,39 @@ ax.set_zlabel('S')
 coords = np.array([X,Y,Z]).T
 dist = distance.cdist(coords, coords, 'euclidean')
 
-plt.figure()
-plt.imshow(dist)
+f,[ax0,ax1,ax2]=plt.subplots(1,3)
+ax0.imshow(dist)
 
 lamda = 0.12#0.18
-J = np.exp(-lamda*dist)
-np.fill_diagonal(J, 0)
+J = tb.makeJ(dist,lamda)
 
-plt.figure()
-plt.title('J = np.exp(-0.18*dist) ')
-plt.imshow(J)
+ax1.set_title('J = np.exp(-0.18*dist) ')
+ax1.imshow(J)
 
-plt.figure()
-plt.title('J>0.04')
-plt.imshow(J>0.04)
-
-plt.show()
+ax2.set_title('J>0.04')
+ax2.imshow(J>0.04)
 
 
 np.random.seed(8792)
 
-runs = 5
+runs = 4
 passi = 200
 N=J.shape[0]
+
 print('runs',runs)
 print('N',N)
-states = np.zeros((runs,passi,N))
 
+states = np.zeros((runs,passi,N))
 cycle1ConvTime = [] 
 
 for r in range(runs):
-    s0 = 2*np.random.binomial(1, 0.5, N)-1
-    states[r,0,:] = s0
-
-    for t in range(1,passi):
-        s1 = trans(s0,J,N,typ = 1, thr = 0) #getCycles.transPy(s0,J,N,typ = 1, thr = 0)
-        #print(s1)
-        s0=s1.T
-        states[r,t,:] = s1.T
-
-    Cdt1 = np.mean(states[r,1:,:]*states[r,:-1,:],axis=1)
+    stasteRun,Cdt1 = tb.run(J, N, passi)
+    states[r,:,:] = stasteRun
     cycle1ConvTime.append(np.argmax(Cdt1>=1.))
 
     if r<5:    
         f,axs=plt.subplots(2)
-        #plt.figure()
-        axs[0].imshow(states[r,:,:].T)
-        #plt.figure()
+        axs[0].imshow(stasteRun.T)
         axs[1].plot(Cdt1)
 
 

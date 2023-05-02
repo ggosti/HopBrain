@@ -69,6 +69,7 @@ plt.imshow(dist)
 
 lambd = 0.18 # mm^(-1)
 J = np.exp(-lambd*dist)
+np.fill_diagonal(J, 0)
 N=J.shape[0]
 
 plt.figure()
@@ -98,6 +99,7 @@ runsList = []
 for lambd in lambdas:
     print('Lambda',lambd)
     J = np.exp(-lambd*dist)
+    np.fill_diagonal(J, 0)
     
     #f,[[ax0,ax1],[ax2,ax3]] = plt.subplots(2,2)
     #ax0.set_title('J = np.exp(-0.18*dist) ')
@@ -147,6 +149,7 @@ for lambd in lambdas:
                 val = Jij.pop()
                 J[i,j] = val
                 J[j,i] = val
+    	np.fill_diagonal(J, 0)
         #ax1.imshow(J)
         #ax3.hist(J.flatten(),bins=100)
         

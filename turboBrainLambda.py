@@ -68,6 +68,7 @@ plt.imshow(dist)
 
 lambd = 0.18 # mm^(-1)
 J = np.exp(-lambd*dist)
+np.fill_diagonal(J, 0)
 plt.figure()
 plt.title('J = np.exp(-0.18*dist) ')
 plt.imshow(J)
@@ -96,6 +97,7 @@ runsList = []
 for lambd in lambdas:
     print('Lambda',lambd)
     J = np.exp(-lambd*dist)
+    np.fill_diagonal(J, 0)
     #plt.figure()
     #plt.title('J = np.exp(-0.18*dist) ')
     #plt.imshow(J)

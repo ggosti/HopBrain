@@ -66,8 +66,9 @@ dist2=np.sqrt(euc2(coords))
 plt.figure()
 plt.imshow(dist)
 
-lamda = 0.24
+lamda = 0.12#0.18
 J = np.exp(-lamda*dist)
+np.fill_diagonal(J, 0)
 plt.figure()
 plt.title('J = np.exp(-0.18*dist) ')
 plt.imshow(J)
@@ -309,9 +310,13 @@ if np.logical_not(gate2).any():
 
 A = np.vstack([x, np.ones(len(x))]).T
 # Direct least square regression
-alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-print('coef log S(r)',alpha)
-ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
+try:
+    alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
+    print('coef log S(r)',alpha)
+    ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
+except np.linalg.LinAlgError as err:
+    if 'Singular matrix' in str(err):
+        print('singular')
 
 ax[0].set_ylabel('log( S(r) )')
 ax[0].set_xlabel('log( r )')
@@ -319,7 +324,7 @@ ax[0].set_xlim((1,5.5))
 ax[0].set_ylim((-5,2))
 ax[0].plot([2,3.5],[-0.1,-0.1 + 1.5*0.5],'r')
 
-ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
+#ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
 ax[0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
 
 plt.savefig('structure'+str(lamda)+'.pdf')

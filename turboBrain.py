@@ -7,25 +7,9 @@ import numpy as np
 #import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.spatial import distance
+import time
 
-def trans(sigma_path0,net1,N,typ = 0, thr = 0):
-    """
-    transiton function. net1 is the network that generates the ttransitions
-    
-    If sigma_path0 is a binary vector it generates the corresponding transtions.
-    
-    If sigma_path0 is a list of binary vectors it generates a list with the corresponding transtions.
-    
-    typ determins if the neuron activation state is defined in {-1,1} or {0,1} 
-    typ=1 --> {-1,1}    typ=0 --> {0,1} 
-    """
-    sigma_path1 = net1.dot(sigma_path0.T)
-    #print(sigma_path1)
-    sigma_path1 [sigma_path1  == 0] = 0.000001
-    #print(sigma_path1)
-    sigma_path1 = (1-typ+np.sign(sigma_path1 +thr))/(2-typ)
-    #print(sigma_path1)
-    return sigma_path1.T   
 
 
 # # Parcellizzazione
@@ -49,19 +33,7 @@ ax.set_ylabel('A')
 ax.set_zlabel('S')
 
 coords = np.array([X,Y,Z]).T
-
-def euc(listCoords):
-    return np.array([[ np.linalg.norm(i-j) for j in listCoords] for i in listCoords])
-
-def euc2(listCoords):
-    return np.array([[np.sum((i-j)**2) for j in listCoords] for i in listCoords])
-
-dist = euc(coords)
-dist.shape
-
-dist2=np.sqrt(euc2(coords))
-
-
+dist = distance.cdist(coords, coords, 'euclidean')
 
 plt.figure()
 plt.imshow(dist)
@@ -69,6 +41,7 @@ plt.imshow(dist)
 lamda = 0.12#0.18
 J = np.exp(-lamda*dist)
 np.fill_diagonal(J, 0)
+
 plt.figure()
 plt.title('J = np.exp(-0.18*dist) ')
 plt.imshow(J)
@@ -77,7 +50,7 @@ plt.figure()
 plt.title('J>0.04')
 plt.imshow(J>0.04)
 
-#plt.show()
+plt.show()
 
 
 np.random.seed(8792)

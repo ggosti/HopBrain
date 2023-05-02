@@ -197,6 +197,15 @@ for lambd in lambdas:
             ax[r,0].set_ylim((-5,2))
             ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
             #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+
+df0 = pd.DataFrame(
+    {'alphaRuns':alphaSrRuns,
+     'lambdas':lambdasRuns,
+      'alphaAgr':alphasSrAggrRun,
+      'run':runsList})
+df0.to_csv('parametersRuns.csv', index=False)
+
+
 plt.show()
 
 """

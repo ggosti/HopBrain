@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import matplotlib.pyplot as plt
 
 # make J as defined by Deco
 def makeJ(dist,lamda):
@@ -68,3 +69,24 @@ def computeBrCuda(statesRun,uniqDist,iListList,jListList):
             cors.append(cor.cpu().numpy())
         BdRun.append(np.mean(cors))
     return BdRun
+
+
+# plot stuff
+
+def plotInitalJ(X, Y, Z,dist,J):
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    ax.scatter(X, Y, Z)
+
+    ax.set_xlabel('R')
+    ax.set_ylabel('A')
+    ax.set_zlabel('S')
+
+    f,[ax0,ax1,ax2]=plt.subplots(1,3)
+    ax0.imshow(dist)
+
+    ax1.set_title('J = np.exp(-0.18*dist) ')
+    ax1.imshow(J)
+
+    ax2.set_title('J>0.04')
+    ax2.imshow(J>0.04)

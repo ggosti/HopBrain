@@ -15,39 +15,18 @@ import turboBrainUtils as tb
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
-
-
 df = pd.read_csv('Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv')
 df.head()
-
-fig = plt.figure()
-ax = fig.add_subplot(projection='3d')
-
 X = df['R']
 Y = df['A']
 Z = df['S']
 
-ax.scatter(X, Y, Z)
-
-ax.set_xlabel('R')
-ax.set_ylabel('A')
-ax.set_zlabel('S')
-
 coords = np.array([X,Y,Z]).T
 dist = distance.cdist(coords, coords, 'euclidean')
-
-f,[ax0,ax1,ax2]=plt.subplots(1,3)
-ax0.imshow(dist)
-
 lamda = 0.18#0.18
 J = tb.makeJ(dist,lamda)
 
-ax1.set_title('J = np.exp(-0.18*dist) ')
-ax1.imshow(J)
-
-ax2.set_title('J>0.04')
-ax2.imshow(J>0.04)
-
+tb.plotInitalJ(X, Y, Z,dist,J)
 
 np.random.seed(8792)
 
@@ -132,7 +111,7 @@ if (numCycle1ConvTime == runs ):
     plt.figure()
     for r in range(runs):
         plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
-    plt.plot([2,3],[-0.1,-0.1 -0.5])
+    #plt.plot([2,3],[-0.1,-0.1 -0.5])
 else:
     for r in range(runs):
         print('run',r)
@@ -215,6 +194,11 @@ for r in range(5):
     ax[r,0].set_ylim((-5,2))
     ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
     #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+
+
+plt.show()
+
+"""
     
 f,ax=plt.subplots(1,2)
 rs = []
@@ -293,3 +277,4 @@ ax[0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
 
 plt.savefig('structure'+str(lamda)+'.pdf')
 plt.show()
+"""

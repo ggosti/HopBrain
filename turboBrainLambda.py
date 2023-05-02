@@ -7,78 +7,26 @@ import numpy as np
 #import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.spatial import distance
+import time
 
-def trans(sigma_path0,net1,N,typ = 0, thr = 0):
-    """
-    transiton function. net1 is the network that generates the ttransitions
-    
-    If sigma_path0 is a binary vector it generates the corresponding transtions.
-    
-    If sigma_path0 is a list of binary vectors it generates a list with the corresponding transtions.
-    
-    typ determins if the neuron activation state is defined in {-1,1} or {0,1} 
-    typ=1 --> {-1,1}    typ=0 --> {0,1} 
-    """
-    sigma_path1 = net1.dot(sigma_path0.T)
-    #print(sigma_path1)
-    sigma_path1 [sigma_path1  == 0] = 0.000001
-    #print(sigma_path1)
-    sigma_path1 = (1-typ+np.sign(sigma_path1 +thr))/(2-typ)
-    #print(sigma_path1)
-    return sigma_path1.T   
+import turboBrainUtils as tb 
 
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
-
-
 df = pd.read_csv('Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv')
 df.head()
-
-fig = plt.figure()
-ax = fig.add_subplot(projection='3d')
-
 X = df['R']
 Y = df['A']
 Z = df['S']
 
-ax.scatter(X, Y, Z)
-
-ax.set_xlabel('R')
-ax.set_ylabel('A')
-ax.set_zlabel('S')
-
 coords = np.array([X,Y,Z]).T
+dist = distance.cdist(coords, coords, 'euclidean')
+lamda = 0.18#0.18
+J = tb.makeJ(dist,lamda)
 
-def euc(listCoords):
-    return np.array([[ np.linalg.norm(i-j) for j in listCoords] for i in listCoords])
-
-def euc2(listCoords):
-    return np.array([[np.sum((i-j)**2) for j in listCoords] for i in listCoords])
-
-dist = euc(coords)
-dist.shape
-
-dist2=np.sqrt(euc2(coords))
-
-
-
-plt.figure()
-plt.imshow(dist)
-
-lambd = 0.18 # mm^(-1)
-J = np.exp(-lambd*dist)
-np.fill_diagonal(J, 0)
-plt.figure()
-plt.title('J = np.exp(-0.18*dist) ')
-plt.imshow(J)
-
-plt.figure()
-plt.title('J>0.04')
-plt.imshow(J>0.04)
-plt.show()
-
-plt.show()
+tb.plotInitalJ(X, Y, Z,dist,J)
 
 np.random.seed(8792)
 
@@ -86,7 +34,8 @@ alphas = []
 
 runs = 40
 passi = 100#200
-lambdas = np.arange(0.08,0.30,0.01)
+N=len(X)
+lambdas = np.arange(0.10,0.30,0.01)
 
 alphaSrRuns = []
 lambdasRuns = []
@@ -96,8 +45,7 @@ runsList = []
 
 for lambd in lambdas:
     print('Lambda',lambd)
-    J = np.exp(-lambd*dist)
-    np.fill_diagonal(J, 0)
+    J = tb.makeJ(dist,lambd)
     #plt.figure()
     #plt.title('J = np.exp(-0.18*dist) ')
     #plt.imshow(J)
@@ -106,33 +54,20 @@ for lambd in lambdas:
     #plt.title('J>0.04')
     #plt.imshow(J>0.04)
     #plt.show()
-    
-
-    N=J.shape[0]
     print('runs',runs)
     print('N',N)
-    states = np.zeros((runs,passi,N))
 
+    states = np.zeros((runs,passi,N))
     cycle1ConvTime = [] 
 
     for r in range(runs):
-        s0 = 2*np.random.binomial(1, 0.5, N)-1
-        states[r,0,:] = s0
-
-        for t in range(1,passi):
-            s1 = trans(s0,J,N,typ = 1, thr = 0) #getCycles.transPy(s0,J,N,typ = 1, thr = 0)
-            #print(s1)
-            s0=s1.T
-            states[r,t,:] = s1.T
-
-        Cdt1 = np.mean(states[r,1:,:]*states[r,:-1,:],axis=1)
+        stasteRun,Cdt1 = tb.run(J, N, passi)
+        states[r,:,:] = stasteRun
         cycle1ConvTime.append(np.argmax(Cdt1>=1.))
 
         if r<5:    
             f,axs=plt.subplots(2)
-            #plt.figure()
-            axs[0].imshow(states[r,:,:].T)
-            #plt.figure()
+            axs[0].imshow(stasteRun.T)
             axs[1].plot(Cdt1)
 
 
@@ -150,50 +85,28 @@ for lambd in lambdas:
     #plt.show()
 
     uniqDist = np.unique(dist)
-    #plt.figure()
-    #plt.hist(uniqDist,bins=100)
     ii,jj=np.mgrid[0:N, 0:N]
-    #print(ii)
-    #print(jj)
 
-
-
-    dList = []
     iListList = []
     jListList = []
 
+    t0 = time.time()
     for d in uniqDist:
-        #print(d,np.sum(dist==d))
-        #print(ii[dist==d])
-        #print(jj[dist==d])
-        #dList = dList + np.sum(dist==d)*[d]
         iListList.append(ii[dist==d])
         jListList.append(jj[dist==d])
+    t1 = time.time()
+    print('time ij list',t1-t0)
 
     Bd = [[] for r in range(runs)]
     if (numCycle1ConvTime == runs ):
         for r in range(runs):
             print('run on stationary state',r)
-            for d,iList,jList in zip(uniqDist,iListList,jListList):
-                #print(d,np.sum(dist==d))
-                cors = []
-                for i,j in zip(iList,jList):
-                    #cor = np.mean(states[r,:,i]*states[r,:,j])
-                    #WARNING: given that all
-                    cor = np.mean(states[r,-1,i]*states[r,-1,j])
-                    cors.append(cor)
-                Bd[r].append(np.mean(cors))
-
-        #print('len',uniqDist,Bd[r])
-        #plt.figure()
-        #for r in range(runs):
-        #    plt.scatter(uniqDist,Bd[r])
-        #plt.loglog()
-        #
-        #plt.figure()
-        #for r in range(runs):
-        #    plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
-        #plt.plot([2,3],[-0.1,-0.1 -0.5])
+            t0 = time.time()
+            BdRun = tb.computeBr(states[r,:,:],uniqDist,iListList,jListList)
+            print(BdRun[:5],len(BdRun))
+            #Bd[r] = BdRun
+            t1 = time.time()
+            Bd[r] = BdRun
     else:
         for r in range(runs):
             print('run',r)
@@ -284,6 +197,9 @@ for lambd in lambdas:
             ax[r,0].set_ylim((-5,2))
             ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
             #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+plt.show()
+
+"""
     
     f,ax=plt.subplots(1,2)
     rs = []

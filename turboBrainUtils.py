@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 # make J as defined by Deco
 def makeJ(dist,lamda):
@@ -26,14 +27,44 @@ def trans(sigma_path0,net1,N,typ = 0, thr = 0):
     return sigma_path1.T  
 
 def run(J, N, passi):
-    states = np.zeros((passi,N))
+    statesRun = np.zeros((passi,N))
     s0 = 2*np.random.binomial(1, 0.5, N)-1
-    states[0,:] = s0
+    statesRun[0,:] = s0
 
     for t in range(1,passi):
         s1 = trans(s0,J,N,typ = 1, thr = 0) #getCycles.transPy(s0,J,N,typ = 1, thr = 0)
         #print(s1)
         s0=s1.T
-        states[t,:] = s1.T
-    Cdt1 = np.mean(states[1:,:]*states[:-1,:],axis=1)
-    return states, Cdt1
+        statesRun[t,:] = s1.T
+    Cdt1 = np.mean(statesRun[1:,:]*statesRun[:-1,:],axis=1)
+    return statesRun, Cdt1
+
+def computeBr(statesRun,uniqDist,iListList,jListList):
+    BdRun = []
+    for d,iList,jList in zip(uniqDist,iListList,jListList):
+        #print(d,np.sum(dist==d))
+        cors = []
+        for i,j in zip(iList,jList):
+            #cor = np.mean(states[r,:,i]*states[r,:,j])
+            #WARNING: given that all runs converge to a stationary state
+            cor = np.mean(statesRun[-1,i]*statesRun[-1,j])
+            cors.append(cor)
+        BdRun.append(np.mean(cors))
+    return BdRun
+
+def computeBrCuda(statesRun,uniqDist,iListList,jListList):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    BdRun = []
+    tStatesRun = torch.from_numpy(statesRun)
+    tStatesRun = tStatesRun.to(device)
+    print('is in cuda',tStatesRun.is_cuda) 
+    for d,iList,jList in zip(uniqDist,iListList,jListList):
+        #print(d,np.sum(dist==d))
+        cors = []
+        for i,j in zip(iList,jList):
+            #cor = np.mean(states[r,:,i]*states[r,:,j])
+            #WARNING: given that all runs converge to a stationary state
+            cor = torch.mean(tStatesRun[-1,i]*tStatesRun[-1,j])
+            cors.append(cor.cpu().numpy())
+        BdRun.append(np.mean(cors))
+    return BdRun

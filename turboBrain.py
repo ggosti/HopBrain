@@ -39,7 +39,7 @@ dist = distance.cdist(coords, coords, 'euclidean')
 f,[ax0,ax1,ax2]=plt.subplots(1,3)
 ax0.imshow(dist)
 
-lamda = 0.12#0.18
+lamda = 0.18#0.18
 J = tb.makeJ(dist,lamda)
 
 ax1.set_title('J = np.exp(-0.18*dist) ')
@@ -51,10 +51,16 @@ ax2.imshow(J>0.04)
 
 np.random.seed(8792)
 
-runs = 4
+runs = 5
 passi = 200
 N=J.shape[0]
 
+
+#
+# Run simulations
+#
+
+print('--Run simulations--')
 print('runs',runs)
 print('N',N)
 
@@ -85,41 +91,38 @@ assert numCycle1ConvTime == runs, f"not all runs end in absorbing state: {numCyc
 
 plt.show()
 
+#
+# measure correlations
+#
+
 uniqDist = np.unique(dist)
-#plt.figure()
-#plt.hist(uniqDist,bins=100)
 ii,jj=np.mgrid[0:N, 0:N]
-#print(ii)
-#print(jj)
 
-
-
-dList = []
 iListList = []
 jListList = []
 
+t0 = time.time()
 for d in uniqDist:
-    #print(d,np.sum(dist==d))
-    #print(ii[dist==d])
-    #print(jj[dist==d])
-    #dList = dList + np.sum(dist==d)*[d]
     iListList.append(ii[dist==d])
     jListList.append(jj[dist==d])
+t1 = time.time()
+print('time ij list',t1-t0)
 
 Bd = [[] for r in range(runs)]
 if (numCycle1ConvTime == runs ):
     for r in range(runs):
         print('run on stationary state',r)
-        for d,iList,jList in zip(uniqDist,iListList,jListList):
-            #print(d,np.sum(dist==d))
-            cors = []
-            for i,j in zip(iList,jList):
-                #cor = np.mean(states[r,:,i]*states[r,:,j])
-                #WARNING: given that all
-                cor = np.mean(states[r,-1,i]*states[r,-1,j])
-                cors.append(cor)
-            Bd[r].append(np.mean(cors))
-
+        t0 = time.time()
+        BdRun = tb.computeBr(states[r,:,:],uniqDist,iListList,jListList)
+        print(BdRun[:5],len(BdRun))
+        #Bd[r] = BdRun
+        t1 = time.time()
+        Bd[r] = BdRun
+        #
+        #BdRun2 = tb.computeBrCuda(states[r,:,:],uniqDist,iListList,jListList)
+        #print(BdRun2[:5],len(BdRun2))
+        #t2 = time.time()
+        #print('time comp B(r)',t1-t0,t2-t1)
     #print('len',uniqDist,Bd[r])
     plt.figure()
     for r in range(runs):
@@ -149,10 +152,10 @@ else:
     plt.figure()
     for r in range(runs):
         plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
-    plt.plot([2,3],[-0.1,-0.1 -0.5])
+    #plt.plot([2,3],[-0.1,-0.1 -0.5])
 
 
-#plt.show()
+plt.show()
 
 plt.figure()
 h,bins,f=plt.hist(uniqDist,bins=100)
@@ -164,6 +167,7 @@ for r in range(5):
     rs = []
     binnedBd = [] 
     for ra,rb in zip(bins[:-1],bins[1:]):
+        print(ra,rb,type(Bd[r]),Bd[r][:5])
         gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
         binnedBd.append(np.mean(np.array(Bd[r])[gate]))
         rs.append(0.5*(ra+rb))

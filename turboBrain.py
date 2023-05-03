@@ -12,6 +12,10 @@ import time
 
 import turboBrainUtils as tb 
 
+runs = 40
+passi = 100#200
+autapse = True
+randomize = False
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
@@ -20,19 +24,21 @@ df.head()
 X = df['R']
 Y = df['A']
 Z = df['S']
+N=len(X)
 
 coords = np.array([X,Y,Z]).T
 dist = distance.cdist(coords, coords, 'euclidean')
+uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
+plt.figure()
+h,bins,f=plt.hist(uniqDist,bins=100)
+plt.title('unique distance')
+
 lamda = 0.18#0.18
-J = tb.makeJ(dist,lamda)
+J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J)
 
 np.random.seed(8792)
-
-runs = 5
-passi = 200
-N=J.shape[0]
 
 
 #
@@ -98,10 +104,10 @@ if (numCycle1ConvTime == runs ):
         t1 = time.time()
         Bd[r] = BdRun
         #
-        #BdRun2 = tb.computeBrCuda(states[r,:,:],uniqDist,iListList,jListList)
+        #BdRun2 = tb.computeBr2(states[r,:,:],uniqDist,iListList,jListList)
         #print(BdRun2[:5],len(BdRun2))
         #t2 = time.time()
-        #print('time comp B(r)',t1-t0,t2-t1)
+        #print('time comp B(r)',t1-t0,t2-t1,BdRun2==BdRun)
     #print('len',uniqDist,Bd[r])
     plt.figure()
     for r in range(runs):
@@ -146,7 +152,7 @@ for r in range(5):
     rs = []
     binnedBd = [] 
     for ra,rb in zip(bins[:-1],bins[1:]):
-        print(ra,rb,type(Bd[r]),Bd[r][:5])
+        #print(ra,rb,type(Bd[r]),Bd[r][:5])
         gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
         binnedBd.append(np.mean(np.array(Bd[r])[gate]))
         rs.append(0.5*(ra+rb))

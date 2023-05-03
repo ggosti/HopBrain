@@ -1,12 +1,41 @@
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
+import time
+import random
 
 # make J as defined by Deco
-def makeJ(dist,lamda):
+def makeJ(dist,lamda,autapse=False,randomize=False):
     J = np.exp(-lamda*dist)
-    np.fill_diagonal(J, 0)
+    if not autapse: np.fill_diagonal(J, 0)
+    if randomize:
+        N = J.shape[0]
+        Jij = []
+        for i in range(N):
+            for j in range(i+1):
+	            Jij.append(J[i,j])
+        random.shuffle(Jij)
+        for i in range(N):
+            for j in range(i):
+                val = Jij.pop()
+                J[i,j] = val
+                J[j,i] = val
     return J
+
+def sortIJbyDist(dist,N):
+    uniqDist = np.unique(dist)
+    ii,jj=np.mgrid[0:N, 0:N]
+
+    iListList = []
+    jListList = []
+
+    t0 = time.time()
+    for d in uniqDist:
+        iListList.append(ii[dist==d])
+        jListList.append(jj[dist==d])
+    t1 = time.time()
+    print('time ij list',t1-t0)
+    return uniqDist,iListList,jListList
 
 def trans(sigma_path0,net1,N,typ = 0, thr = 0):
     """
@@ -40,7 +69,7 @@ def run(J, N, passi):
     Cdt1 = np.mean(statesRun[1:,:]*statesRun[:-1,:],axis=1)
     return statesRun, Cdt1
 
-def computeBr(statesRun,uniqDist,iListList,jListList):
+def computeBrOld(statesRun,uniqDist,iListList,jListList):
     BdRun = []
     for d,iList,jList in zip(uniqDist,iListList,jListList):
         #print(d,np.sum(dist==d))
@@ -51,6 +80,14 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
             cor = np.mean(statesRun[-1,i]*statesRun[-1,j])
             cors.append(cor)
         BdRun.append(np.mean(cors))
+    return BdRun
+
+def computeBr(statesRun,uniqDist,iListList,jListList):
+    BdRun = []
+    for d,iList,jList in zip(uniqDist,iListList,jListList):
+        #print(d,np.sum(dist==d))
+        cors = np.mean(statesRun[-1,np.array(iList)]*statesRun[-1,np.array(jList)])
+        BdRun.append(cors)
     return BdRun
 
 def computeBrCuda(statesRun,uniqDist,iListList,jListList):

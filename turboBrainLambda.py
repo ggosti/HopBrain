@@ -12,6 +12,10 @@ import time
 
 import turboBrainUtils as tb 
 
+runs = 40
+passi = 100#200
+autapse = True
+randomize = True
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
@@ -20,11 +24,17 @@ df.head()
 X = df['R']
 Y = df['A']
 Z = df['S']
+N=len(X)
 
 coords = np.array([X,Y,Z]).T
 dist = distance.cdist(coords, coords, 'euclidean')
+uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
+plt.figure()
+h,bins,f=plt.hist(uniqDist,bins=100)
+plt.title('unique distance')
+
 lamda = 0.18#0.18
-J = tb.makeJ(dist,lamda)
+J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J)
 
@@ -32,20 +42,21 @@ np.random.seed(8792)
 
 alphas = []
 
-runs = 40
-passi = 100#200
-N=len(X)
+
+
 lambdas = np.arange(0.10,0.30,0.01)
 
 alphaSrRuns = []
 lambdasRuns = []
 alphasSrAggrRun = []
 runsList = []
+brsDict = {}
+brsDict = {}
 
 
 for lambd in lambdas:
     print('Lambda',lambd)
-    J = tb.makeJ(dist,lambd)
+    J = tb.makeJ(dist,lambd,autapse,randomize)
     #plt.figure()
     #plt.title('J = np.exp(-0.18*dist) ')
     #plt.imshow(J)
@@ -64,7 +75,6 @@ for lambd in lambdas:
         stasteRun,Cdt1 = tb.run(J, N, passi)
         states[r,:,:] = stasteRun
         cycle1ConvTime.append(np.argmax(Cdt1>=1.))
-
         if r<5:    
             f,axs=plt.subplots(2)
             axs[0].imshow(stasteRun.T)
@@ -84,26 +94,13 @@ for lambd in lambdas:
 
     #plt.show()
 
-    uniqDist = np.unique(dist)
-    ii,jj=np.mgrid[0:N, 0:N]
-
-    iListList = []
-    jListList = []
-
-    t0 = time.time()
-    for d in uniqDist:
-        iListList.append(ii[dist==d])
-        jListList.append(jj[dist==d])
-    t1 = time.time()
-    print('time ij list',t1-t0)
-
     Bd = [[] for r in range(runs)]
     if (numCycle1ConvTime == runs ):
         for r in range(runs):
             print('run on stationary state',r)
             t0 = time.time()
             BdRun = tb.computeBr(states[r,:,:],uniqDist,iListList,jListList)
-            print(BdRun[:5],len(BdRun))
+            #print(BdRun[:5],len(BdRun))
             #Bd[r] = BdRun
             t1 = time.time()
             Bd[r] = BdRun
@@ -131,8 +128,7 @@ for lambd in lambdas:
 
     #plt.show()
 
-    plt.figure()
-    h,bins,f=plt.hist(uniqDist,bins=100)
+
 
 
     f,ax=plt.subplots(5,2)
@@ -173,6 +169,8 @@ for lambd in lambdas:
         alphaSrRuns.append(alpha[0])
         lambdasRuns.append(lambd)
         runsList.append(r)
+        if not 'bins' in brsDict: brsDict['bins'] = np.array(rs)
+        brsDict['lambd'+str(lambd)+'run'+str(r)] = binnedBd
 
 
         if r < 5:
@@ -198,15 +196,23 @@ for lambd in lambdas:
             ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
             #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
 
-df0 = pd.DataFrame(
-    {'alphaRuns':alphaSrRuns,
-     'lambdas':lambdasRuns,
-      'alphaAgr':alphasSrAggrRun,
-      'run':runsList})
-df0.to_csv('parametersRuns.csv', index=False)
+
+df0 = pd.DataFrame({'alphaRuns':alphaSrRuns,'lambdas':lambdasRuns,'run':runsList})
+df1 = pd.DataFrame(brsDict)
+
+strng = '' 
+if autapse: strng = strng+'-autapse'
+if randomize: strng = strng+'-randomizeJ'
+print(strng)
+
+df0.to_csv('parametersRuns'+strng+'.csv', index=False)
+df1.to_csv('BdRuns'+strng+'.csv', index=False)
 
 
 plt.show()
+
+
+
 
 """
     
@@ -303,3 +309,5 @@ df0 = pd.DataFrame(
       'alphaAgr':alphasSrAggrRun,
       'run':runsList})
 df0.to_csv('parametersRuns.csv', index=False)
+
+"""

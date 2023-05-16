@@ -15,7 +15,7 @@ import turboBrainUtils as tb
 runs = 40
 passi = 100#200
 autapse = True
-randomize = True
+randomize = False
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub

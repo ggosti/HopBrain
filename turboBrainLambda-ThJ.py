@@ -45,7 +45,7 @@ alphas = []
 
 
 lambdas = np.arange(0.10,0.30,0.01)
-ths = [0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4]
+ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4]
 
 alphaSrRuns = []
 lambdasRuns = []
@@ -58,10 +58,13 @@ brsDict = {}
 brsDict = {}
 
 
-for th in ths:
+for thJ in ths:
     for lambd in lambdas:
-        print('Lambda',lambd)
+        print('Lambda',lambd,'thJ',thJ)
         J = tb.makeJ(dist,lambd,autapse,randomize)
+        #print(J[:4,:4], (J<thJ)[:4,:4], 'num cut',np.sum(J<thJ), thJ)
+        J[J<thJ] = 0.
+        #print(J[:4,:4])
         #plt.figure()
         #plt.title('J = np.exp(-0.18*dist) ')
         #plt.imshow(J)
@@ -70,7 +73,7 @@ for th in ths:
         #plt.title('J>0.04')
         #plt.imshow(J>0.04)
         #plt.show()
-        print('runs',runs)
+        #print('runs',runs)
         print('N',N)
 
         states = np.zeros((runs,passi,N))
@@ -102,7 +105,7 @@ for th in ths:
         Bd = [[] for r in range(runs)]
         if (numCycle1ConvTime == runs ):
             for r in range(runs):
-                print('run on stationary state',r)
+                #print('run on stationary state',r)
                 t0 = time.time()
                 BdRun = tb.computeBr(states[r,:,:],uniqDist,iListList,jListList)
                 #print(BdRun[:5],len(BdRun))
@@ -159,7 +162,7 @@ for th in ths:
             #print(x,y)
             # Direct least square regression
             alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-            print('coef log B(r)',alpha)
+            #print('coef log B(r)',alpha)
 
 
 
@@ -170,10 +173,10 @@ for th in ths:
             #print(x,y)
             # Direct least square regression
             alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-            print('coef log S(r)',alpha)
+            #print('coef log S(r)',alpha)
             alphaSrRuns.append(alpha[0])
             lambdasRuns.append(lambd)
-            thsRuns.append(th)
+            thsRuns.append(thJ)
             runsList.append(r)
             if not 'bins' in brsDict: brsDict['bins'] = np.array(rs)
             brsDict['lambd'+str(lambd)+'run'+str(r)] = binnedBd

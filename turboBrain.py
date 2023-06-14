@@ -12,7 +12,7 @@ import time
 
 import turboBrainUtils as tb 
 
-runs = 40
+runs = 20
 passi = 100#200
 autapse = True
 randomize = False
@@ -38,7 +38,7 @@ J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J)
 
-np.random.seed(8792)
+np.random.seed(6792)
 
 
 #
@@ -74,11 +74,13 @@ print('maxConvTime',maxConvTime)
 # Checks if all runs end in cycle that is not an absorbing state
 assert numCycle1ConvTime == runs, f"not all runs end in absorbing state: {numCycle1ConvTime-runs}"
 
-plt.show()
+#plt.show()
 
 #
 # measure correlations
 #
+
+fitxlim = 3.5 
 
 uniqDist = np.unique(dist)
 ii,jj=np.mgrid[0:N, 0:N]
@@ -140,7 +142,7 @@ else:
     #plt.plot([2,3],[-0.1,-0.1 -0.5])
 
 
-plt.show()
+#plt.show()
 
 plt.figure()
 h,bins,f=plt.hist(uniqDist,bins=100)
@@ -160,11 +162,11 @@ for r in range(5):
     
     ax[r,1].scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
     ax[r,1].scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
-    ax[r,1].plot([2,3.5],[-0.1,-0.1 -(1.5*0.5)],'r')
+    ax[r,1].plot([2,fitxlim],[-0.1,-0.1 -(1.5*0.5)],'r')
     #plt.xlim((2,4))
     x=np.log(rs)
     y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
-    gate= np.logical_and(np.logical_and(x>2, x<3.5),np.isfinite(y))
+    gate= np.logical_and(np.logical_and(x>2, x<fitxlim),np.isfinite(y))
     x=x[gate]
     y=y[gate]
     
@@ -184,7 +186,7 @@ for r in range(5):
 
     binnedSr = 2*(binnedBd[0] - binnedBd)
     ax[r,0].scatter(np.log(rs),np.log(binnedSr ),alpha=0.4)
-    ax[r,0].plot([2,3.5],[-0.1,-0.1 + 1.5*0.5],'r')
+    ax[r,0].plot([2,fitxlim],[-0.1,-0.1 + 1.5*0.5],'r')
     y=np.log(binnedSr)
     y=y[gate]
     A = np.vstack([x, np.ones(len(x))]).T
@@ -202,85 +204,94 @@ for r in range(5):
     #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
 
 
-plt.show()
+#plt.show()
 
-"""
-    
-f,ax=plt.subplots(1,2)
-rs = []
-binnedBd = [] 
-binnedSr = [] 
-ax[0].set_title('lambda'+str(lamda))
-for r in range(runs):
-    rsTemp = []
-    binnedBdTemp = [] 
-    for ra,rb in zip(bins[:-1],bins[1:]):
-        gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
-        binnedBdTemp.append(np.mean(np.array(Bd[r])[gate]))
-        rsTemp.append(0.5*(ra+rb))
-    binnedBd = binnedBd + binnedBdTemp
-    binnedBdTemp = np.array(binnedBdTemp)
+if True:   
+    f,ax=plt.subplots(1,2,figsize=(10,4))
+    rs = []
+    binnedBd = [] 
+    binnedSr = [] 
+    ax[0].set_title('lambda'+str(lamda))
+    for r in range(runs):
+        rsTemp = []
+        binnedBdTemp = [] 
+        for ra,rb in zip(bins[:-1],bins[1:]):
+            gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
+            binnedBdTemp.append(np.mean(np.array(Bd[r])[gate]))
+            rsTemp.append(0.5*(ra+rb))
+        binnedBd = binnedBd + binnedBdTemp
+        binnedBdTemp = np.array(binnedBdTemp)
 
-    binnedSrTemp = 2*(binnedBdTemp[0] - binnedBdTemp)
-    binnedSr = binnedSr + binnedSrTemp.tolist()
-    ax[1].scatter(np.log(rsTemp),np.log(binnedBdTemp),s=1,alpha=0.2)
-    ax[0].scatter(np.log(rsTemp),np.log(binnedSrTemp),s=1,alpha=0.2)
-    rs = rs + rsTemp
-    
-
-
-#plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
-#plt.scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
-ax[1].plot([2,3.5],[-0.1,-0.1 -(1.5*0.5)],'r')
-x=np.log(rs)
-y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
-gate= np.logical_and(np.logical_and(x>2, x<3.5),np.isfinite(y))
-x=x[gate]
-y=y[gate]
-
-A = np.vstack([x, np.ones(len(x))]).T
-# Direct least square regression
-alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-print('coef log B(r)',alpha)
-ax[1].plot(x, alpha[0]*x + alpha[1], '-g')
-ax[1].set_ylabel('log( B(r) )')
-ax[1].set_xlabel('log( r )')
-ax[1].set_xlim((1,5.5))
-ax[1].set_ylim((-12,1))
-ax[1].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
+        binnedSrTemp = 2*(binnedBdTemp[0] - binnedBdTemp)
+        binnedSr = binnedSr + binnedSrTemp.tolist()
+        ax[1].plot(np.log(rsTemp),np.log(binnedBdTemp))#,s=4,alpha=0.8)
+        ax[0].plot(np.log(rsTemp),np.log(binnedSrTemp))#,s=4,alpha=0.8)
+        rs = rs + rsTemp
+        
 
 
+    #plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
+    #plt.scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
+    ax[1].plot([2,fitxlim],[-0.1,-0.1 -(1.5*0.5)],'k--',alpha=0.6)
+    x=np.log(rs)
+    y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
+    gate= np.logical_and(np.logical_and(x>2, x<fitxlim),np.isfinite(y))
+    x=x[gate]
+    y=y[gate]
 
-y=np.log(binnedSr)#[np.logical_and(x>2, x<4)]
-y=y[gate]
-
-gate2 = np.isfinite(y)
-print(np.logical_not(gate2))
-print(y)
-if np.logical_not(gate2).any():
-    print('values that get nan in log ',y[np.logical_not(gate2)])
-    y=y[gate2]
-    x=x[gate2]
-
-A = np.vstack([x, np.ones(len(x))]).T
-# Direct least square regression
-try:
+    A = np.vstack([x, np.ones(len(x))]).T
+    # Direct least square regression
     alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-    print('coef log S(r)',alpha)
-    ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
-except np.linalg.LinAlgError as err:
-    if 'Singular matrix' in str(err):
-        print('singular')
+    print('coef log B(r)',alpha)
+    xline = np.array([1,5.5])
+    ax[1].plot(xline, alpha[0]*xline + alpha[1], 'k--',label='slope fit '+"%.3f" % alpha[0])
+    ax[1].plot([1,5.5],[-0.05,-1 + 4.5*(-0.5)],'k--',alpha=0.8,label='slope = -1/2 Deco')
+    ax[1].plot([1,5.5],[-0.05,-1 + 4.5*(-0.66)],'k--',alpha=0.4,label='slope = -2/3 Turbulence')
+    ax[1].set_ylabel('log( B(r) )')
+    ax[1].set_xlabel('log( r )')
+    ax[1].set_xlim((1,5.5))
+    ax[1].set_ylim((-7,0.4))
+    #ax[1].text(2.5, 0, 'slope = '+str(alpha[0]), fontsize=8)
+    ax[1].axvline(2,color='gray')
+    ax[1].axvline(fitxlim,color='gray')
+    ax[1].legend()
 
-ax[0].set_ylabel('log( S(r) )')
-ax[0].set_xlabel('log( r )')
-ax[0].set_xlim((1,5.5))
-ax[0].set_ylim((-5,2))
-ax[0].plot([2,3.5],[-0.1,-0.1 + 1.5*0.5],'r')
 
-#ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
-ax[0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
 
-plt.savefig('structure'+str(lamda)+'.pdf')
+    y=np.log(binnedSr)#[np.logical_and(x>2, x<4)]
+    y=y[gate]
+
+    gate2 = np.isfinite(y)
+    print(np.logical_not(gate2))
+    print(y)
+    if np.logical_not(gate2).any():
+        print('values that get nan in log ',y[np.logical_not(gate2)])
+        y=y[gate2]
+        x=x[gate2]
+
+    A = np.vstack([x, np.ones(len(x))]).T
+    # Direct least square regression
+    try:
+        alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
+        print('coef log S(r)',alpha)
+        xline = np.array([1,5.5])
+        ax[0].plot(xline, alpha[0]*xline + alpha[1], 'k--',label='slope fit '+"%.3f" % alpha[0])
+    except np.linalg.LinAlgError as err:
+        if 'Singular matrix' in str(err):
+            print('singular')
+
+    ax[0].set_ylabel('log( S(r) )')
+    ax[0].set_xlabel('log( r )')
+    ax[0].set_xlim((1,5.5))
+    ax[0].set_ylim((-2,1.77))
+    ax[0].plot([1,5.5],[-0.05,-0.1 + 4.5*0.5],'k--',alpha=0.8,label='slope = 1/2 Deco')
+    ax[0].plot([1,5.5],[-0.05,-0.1 + 4.5*0.66],'k--',alpha=0.4,label='slope = 2/3 Turbulence')
+    ax[0].axvline(2,color='gray')
+    ax[0].axvline(fitxlim,color='gray')
+
+    #ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
+    #ax[0].text(4, 1, 'slope = '+"%.2f" % alpha[0], fontsize=8)
+    ax[0].legend()
+    plt.tight_layout()
+    plt.savefig('structure'+str(lamda)+'.pdf')
 plt.show()
-"""

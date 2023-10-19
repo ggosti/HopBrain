@@ -1,5 +1,5 @@
 import numpy as np
-import torch
+# import torch
 import matplotlib.pyplot as plt
 import time
 import random
@@ -90,22 +90,22 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
         BdRun.append(cors)
     return BdRun
 
-def computeBrCuda(statesRun,uniqDist,iListList,jListList):
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    BdRun = []
-    tStatesRun = torch.from_numpy(statesRun)
-    tStatesRun = tStatesRun.to(device)
-    print('is in cuda',tStatesRun.is_cuda) 
-    for d,iList,jList in zip(uniqDist,iListList,jListList):
-        #print(d,np.sum(dist==d))
-        cors = []
-        for i,j in zip(iList,jList):
-            #cor = np.mean(states[r,:,i]*states[r,:,j])
-            #WARNING: given that all runs converge to a stationary state
-            cor = torch.mean(tStatesRun[-1,i]*tStatesRun[-1,j])
-            cors.append(cor.cpu().numpy())
-        BdRun.append(np.mean(cors))
-    return BdRun
+#def computeBrCuda(statesRun,uniqDist,iListList,jListList):
+#    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+#    BdRun = []
+#    tStatesRun = torch.from_numpy(statesRun)
+#    tStatesRun = tStatesRun.to(device)
+#    print('is in cuda',tStatesRun.is_cuda) 
+#    for d,iList,jList in zip(uniqDist,iListList,jListList):
+#        #print(d,np.sum(dist==d))
+#        cors = []
+#        for i,j in zip(iList,jList):
+#            #cor = np.mean(states[r,:,i]*states[r,:,j])
+#            #WARNING: given that all runs converge to a stationary state
+#            cor = torch.mean(tStatesRun[-1,i]*tStatesRun[-1,j])
+#            cors.append(cor.cpu().numpy())
+#        BdRun.append(np.mean(cors))
+#    return BdRun
 
 
 # plot stuff
@@ -115,9 +115,9 @@ def plotInitalJ(X, Y, Z,dist,J):
     ax = fig.add_subplot(projection='3d')
     ax.scatter(X, Y, Z)
 
-    ax.set_xlabel('R')
-    ax.set_ylabel('A')
-    ax.set_zlabel('S')
+    ax.set_xlabel('R (mm)')
+    ax.set_ylabel('A (mm)')
+    ax.set_zlabel('S (mm)')
 
     f,[ax0,ax1,ax2]=plt.subplots(1,3)
     ax0.imshow(dist)

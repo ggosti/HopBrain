@@ -196,8 +196,8 @@ for r in range(5):
     print('coef log S(r)',alpha)
 
     ax[r,0].plot(x, alpha[0]*x + alpha[1], '-g')
-    ax[r,0].set_ylabel('log( S(r) )')
-    ax[r,0].set_xlabel('log( r )')
+    ax[r,0].set_ylabel('$\log( S(r) )$')
+    ax[r,0].set_xlabel('$\log( r )$')
     ax[r,0].set_xlim((1,5.5))
     ax[r,0].set_ylim((-5,2))
     ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
@@ -208,10 +208,18 @@ for r in range(5):
 
 if True:   
     f,ax=plt.subplots(1,2,figsize=(10,4))
+    f.subplots_adjust(top=0.963, bottom=0.156, left=0.078, right=0.985, hspace=1.0, wspace=0.25)
+    f.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
+    f.text( x= 0.52, y = 0.95 ,s='B', fontsize=14)
+    #ax[0].set_title('lambda'+str(lamda))
+    f,axComp=plt.subplots(1,2,figsize=(10,4))
+    f.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
+    f.text( x= 0.5, y = 0.95 ,s='B', fontsize=14)
+    #axComp[0].set_title('A', loc='left')
+    #axComp[1].set_title('B', loc='left')
     rs = []
     binnedBd = [] 
     binnedSr = [] 
-    ax[0].set_title('lambda'+str(lamda))
     for r in range(runs):
         rsTemp = []
         binnedBdTemp = [] 
@@ -226,13 +234,15 @@ if True:
         binnedSr = binnedSr + binnedSrTemp.tolist()
         ax[1].plot(np.log(rsTemp),np.log(binnedBdTemp))#,s=4,alpha=0.8)
         ax[0].plot(np.log(rsTemp),np.log(binnedSrTemp))#,s=4,alpha=0.8)
+        axComp[1].plot(np.log(rsTemp),np.log(binnedBdTemp)/np.log(rsTemp))#,s=4,alpha=0.8)
+        axComp[0].plot(np.log(rsTemp),np.log(binnedSrTemp)/np.log(rsTemp))#,s=4,alpha=0.8)
         rs = rs + rsTemp
         
 
 
     #plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
     #plt.scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
-    ax[1].plot([2,fitxlim],[-0.1,-0.1 -(1.5*0.5)],'k--',alpha=0.6)
+    #ax[1].plot([2,fitxlim],[-0.1,-0.1 -(1.5*0.5)],'k--',alpha=0.6)
     x=np.log(rs)
     y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
     gate= np.logical_and(np.logical_and(x>2, x<fitxlim),np.isfinite(y))
@@ -243,18 +253,33 @@ if True:
     # Direct least square regression
     alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
     print('coef log B(r)',alpha)
-    xline = np.array([1,5.5])
-    ax[1].plot(xline, alpha[0]*xline + alpha[1], 'k--',label='slope fit '+"%.3f" % alpha[0])
+    xline = np.arange(1,5.5,0.1) #np.array([1,5.5])
+    ax[1].plot(xline, alpha[0]*xline + alpha[1], 'r--',label='slope fit '+"%.3f" % alpha[0])
     ax[1].plot([1,5.5],[-0.05,-1 + 4.5*(-0.5)],'k--',alpha=0.8,label='slope = -1/2 Deco')
     ax[1].plot([1,5.5],[-0.05,-1 + 4.5*(-0.66)],'k--',alpha=0.4,label='slope = -2/3 Turbulence')
-    ax[1].set_ylabel('log( B(r) )')
-    ax[1].set_xlabel('log( r )')
+    ax[1].set_ylabel(r'$\log( B(r) )$')
+    ax[1].set_xlabel(r'$\log( r )$')
     ax[1].set_xlim((1,5.5))
     ax[1].set_ylim((-7,0.4))
     #ax[1].text(2.5, 0, 'slope = '+str(alpha[0]), fontsize=8)
     ax[1].axvline(2,color='gray')
     ax[1].axvline(fitxlim,color='gray')
     ax[1].legend()
+
+
+    axComp[1].plot(xline, alpha[0] + alpha[1]/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
+    #axComp[1].plot(xline, (alpha[0]*xline + alpha[1])/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
+    #axComp[1].plot([1,5.5],[-0.05,-1 + (-0.5)],'k--',alpha=0.8,label='slope = -1/2 Deco')
+    #axComp[1].plot([1,5.5],[-0.05,-1 + (-0.66)],'k--',alpha=0.4,label='slope = -2/3 Turbulence')
+
+    axComp[1].set_ylabel(r'$  \dfrac{\log( B(r) )}{\log( r )} $')#.set_ylabel('log( B(r) )/log( r )')
+    axComp[1].set_xlabel(r'$ \log( r )$')
+    axComp[1].set_xlim((1,5.5))
+    axComp[1].axvline(2,color='gray')
+    axComp[1].axvline(fitxlim,color='gray')
+    axComp[1].legend()
+    
+    #axComp[1].set_ylim((-7,0.4))
 
 
 
@@ -274,8 +299,9 @@ if True:
     try:
         alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
         print('coef log S(r)',alpha)
-        xline = np.array([1,5.5])
+        xline = np.arange(1,5.5,0.1) #np.array([1,5.5])
         ax[0].plot(xline, alpha[0]*xline + alpha[1], 'k--',label='slope fit '+"%.3f" % alpha[0])
+        axComp[0].plot(xline, alpha[0] + alpha[1]/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
     except np.linalg.LinAlgError as err:
         if 'Singular matrix' in str(err):
             print('singular')
@@ -288,6 +314,17 @@ if True:
     ax[0].plot([1,5.5],[-0.05,-0.1 + 4.5*0.66],'k--',alpha=0.4,label='slope = 2/3 Turbulence')
     ax[0].axvline(2,color='gray')
     ax[0].axvline(fitxlim,color='gray')
+
+    
+    axComp[0].set_ylabel(r'$  \dfrac{\log( S(r) )}{\log( r )} $')
+    axComp[0].set_xlabel(r'$ \log( r )$')
+    axComp[0].set_xlim((1,5.5))
+    axComp[0].axvline(2,color='gray')
+    axComp[0].axvline(fitxlim,color='gray')
+    axComp[0].legend()
+
+
+
 
     #ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
     #ax[0].text(4, 1, 'slope = '+"%.2f" % alpha[0], fontsize=8)

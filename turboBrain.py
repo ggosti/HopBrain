@@ -33,7 +33,7 @@ plt.figure()
 h,bins,f=plt.hist(uniqDist,bins=100)
 plt.title('unique distance')
 
-lamda = 0.18#0.18
+lamda = 0.25#0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J)
@@ -61,6 +61,8 @@ for r in range(runs):
         f,axs=plt.subplots(2)
         axs[0].imshow(stasteRun.T)
         axs[1].plot(Cdt1)
+        f,ax=plt.subplots(1)
+        ax.imshow(stasteRun[:80,:].T,cmap='coolwarm')
 
 
 plt.figure()
@@ -74,7 +76,7 @@ print('maxConvTime',maxConvTime)
 # Checks if all runs end in cycle that is not an absorbing state
 assert numCycle1ConvTime == runs, f"not all runs end in absorbing state: {numCycle1ConvTime-runs}"
 
-#plt.show()
+plt.show()
 
 #
 # measure correlations

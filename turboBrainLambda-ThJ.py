@@ -45,11 +45,12 @@ alphas = []
 
 
 lambdas = np.arange(0.10,0.30,0.01)
-ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4]
+ths = [0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8]
 
 alphaSrRuns = []
 lambdasRuns = []
 thsRuns = []
+dilsRuns = []
 alphasSrAggrRun = []
 runsList = []
 
@@ -178,6 +179,8 @@ for thJ in ths:
             lambdasRuns.append(lambd)
             thsRuns.append(thJ)
             runsList.append(r)
+            dil = np.sum(np.sum(J==0)/(N*N))
+            dilsRuns.append(dil)
             if not 'bins' in brsDict: brsDict['bins'] = np.array(rs)
             brsDict['lambd'+str(lambd)+'run'+str(r)] = binnedBd
 
@@ -206,8 +209,10 @@ for thJ in ths:
                 #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
 
 
-df0 = pd.DataFrame({'thsRuns':thsRuns,'alphaRuns':alphaSrRuns,'lambdas':lambdasRuns,'run':runsList})
+df0 = pd.DataFrame({'thsRuns':thsRuns,'alphaRuns':alphaSrRuns,'lambdas':lambdasRuns,'dilsRuns':dilsRuns,'run':runsList})
+df0['deltas'] = 1./df0['lambdas'] 
 df1 = pd.DataFrame(brsDict)
+
 
 strng = '' 
 if autapse: strng = strng+'-autapse'

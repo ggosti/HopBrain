@@ -13,7 +13,7 @@ import time
 import turboBrainUtils as tb 
 
 
-runs = 20
+runs = 1000#1000
 passi = 100#200
 autapse = True
 randomize = False
@@ -34,7 +34,7 @@ plt.figure()
 h,bins,f=plt.hist(uniqDist,bins=100)
 plt.title('unique distance')
 
-lamda = 0.15#0.18
+lamda = 1./5.99 #0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J)
@@ -73,8 +73,10 @@ for r in range(runs):
         ax.set_xlabel('R (mm)')
         ax.set_ylabel('A (mm)')
         ax.set_zlabel('S (mm)')
+ 
 
 
+# convegence time plots
 plt.figure()
 plt.hist(cycle1ConvTime,bins=40)
 plt.xlabel('convergence time to stationary state')
@@ -85,6 +87,38 @@ print('maxConvTime',maxConvTime)
 
 # Checks if all runs end in cycle that is not an absorbing state
 assert numCycle1ConvTime == runs, f"not all runs end in absorbing state: {numCycle1ConvTime-runs}"
+
+plt.show()
+
+# measure averages
+mean_r_states = np.mean(states,axis=0)    
+
+fig = plt.figure(figsize=plt.figaspect(.25))
+ax = fig.add_subplot(1, 4, 1)
+ax.imshow(mean_r_states.T,cmap='coolwarm')  
+ax.set_xlabel('t')
+ax.set_ylabel('i')
+
+ax = fig.add_subplot(1, 4, 2, projection='3d') 
+sc = ax.scatter(X, Y, Z, c=mean_r_states[0,:],cmap='coolwarm')
+plt.colorbar(sc,ax=ax,fraction=0.046)
+ax.set_title('average over all \n starting states \n $\delta = $'+str(np.round(1./lamda,2)))
+ax.set_xlabel('R (mm)')
+ax.set_ylabel('A (mm)')
+ax.set_zlabel('S (mm)')
+
+ax = fig.add_subplot(1, 4, 3, projection='3d') 
+sc = ax.scatter(X, Y, Z, c=mean_r_states[-1,:],cmap='coolwarm')
+plt.colorbar(sc,ax=ax)
+ax.set_title('average over all \n stationary states \n $\delta = $'+str(np.round(1./lamda,2)))
+ax.set_xlabel('R (mm)')
+ax.set_ylabel('A (mm)')
+ax.set_zlabel('S (mm)')
+
+axH = fig.add_subplot(1, 4, 4) 
+axH.hist(mean_r_states[0,:],bins=40,alpha=0.3,label='start')
+axH.hist(mean_r_states[-1,:],bins=40,alpha=0.3,label='convergence')
+axH.legend()
 
 plt.show()
 

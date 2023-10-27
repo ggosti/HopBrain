@@ -12,6 +12,7 @@ import time
 
 import turboBrainUtils as tb 
 
+
 runs = 20
 passi = 100#200
 autapse = True
@@ -33,7 +34,7 @@ plt.figure()
 h,bins,f=plt.hist(uniqDist,bins=100)
 plt.title('unique distance')
 
-lamda = 0.25#0.18
+lamda = 0.15#0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J)
@@ -63,6 +64,15 @@ for r in range(runs):
         axs[1].plot(Cdt1)
         f,ax=plt.subplots(1)
         ax.imshow(stasteRun[:80,:].T,cmap='coolwarm')
+        f,ax=plt.subplots(1)
+        ax.imshow(stasteRun[:80,:].T,cmap='coolwarm')
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        ax.scatter(X, Y, Z, c=stasteRun[-1,:])
+        ax.set_title('$\delta = $'+str(np.round(1./lamda,2)))
+        ax.set_xlabel('R (mm)')
+        ax.set_ylabel('A (mm)')
+        ax.set_zlabel('S (mm)')
 
 
 plt.figure()

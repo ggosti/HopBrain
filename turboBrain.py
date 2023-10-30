@@ -37,7 +37,9 @@ plt.title('unique distance')
 lamda = 1./5.99 #0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
-tb.plotInitalJ(X, Y, Z,dist,J)
+tb.plotInitalJ(X, Y, Z,dist,J,uniqDist)
+
+plt.show()
 
 np.random.seed(6792)
 

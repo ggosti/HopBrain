@@ -13,7 +13,7 @@ import time
 import turboBrainUtils as tb 
 
 
-runs = 1000#1000
+runs = 40#100#1000
 passi = 100#200
 autapse = True
 randomize = False
@@ -30,11 +30,11 @@ N=len(X)
 coords = np.array([X,Y,Z]).T
 dist = distance.cdist(coords, coords, 'euclidean')
 uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
-plt.figure()
-h,bins,f=plt.hist(uniqDist,bins=100)
-plt.title('unique distance')
+#plt.figure()
+#h,bins,f=plt.hist(uniqDist,bins=100)
+#plt.title('unique distance')
 
-lamda = 1./5.99 #0.18
+lamda = 1./5.99 #1./4 # random. #0.18 #1./6.66 (random walk) #5.99 #0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J,uniqDist)
@@ -62,15 +62,24 @@ for r in range(runs):
 
     if r<5:    
         f,axs=plt.subplots(2)
-        axs[0].imshow(stasteRun.T)
+        axs[0].imshow(stasteRun[:80,:].T,cmap='coolwarm')
         axs[1].plot(Cdt1)
-        f,ax=plt.subplots(1)
-        ax.imshow(stasteRun[:80,:].T,cmap='coolwarm')
-        f,ax=plt.subplots(1)
-        ax.imshow(stasteRun[:80,:].T,cmap='coolwarm')
+        #f,ax=plt.subplots(1)
+        #ax.imshow(stasteRun[:80,:].T,cmap='coolwarm')
+        f,ax=plt.subplots(1,figsize=(1.5,9))
+        ax.barh(range(N),stasteRun[-1,:]==1,height=1.,color='r')#,cmap='coolwarm')
+        ax.barh(range(N),stasteRun[-1,:]==-1,height=1.,color='b')
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.axes.get_xaxis().set_visible(False)
+        plt.tight_layout()
+        #f,ax=plt.subplots(1)
+        #ax.imshow(stasteRun[:80,:].T,cmap='coolwarm')
+        # show in atlas
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
-        ax.scatter(X, Y, Z, c=stasteRun[-1,:])
+        ax.scatter(X, Y, Z, c=stasteRun[-1,:],cmap='coolwarm')
         ax.set_title('$\delta = $'+str(np.round(1./lamda,2)))
         ax.set_xlabel('R (mm)')
         ax.set_ylabel('A (mm)')
@@ -103,7 +112,7 @@ ax.set_ylabel('i')
 
 ax = fig.add_subplot(1, 4, 2, projection='3d') 
 sc = ax.scatter(X, Y, Z, c=mean_r_states[0,:],cmap='coolwarm')
-plt.colorbar(sc,ax=ax,fraction=0.046)
+plt.colorbar(sc,ax=ax,fraction=0.046, pad=0.4)
 ax.set_title('average over all \n starting states \n $\delta = $'+str(np.round(1./lamda,2)))
 ax.set_xlabel('R (mm)')
 ax.set_ylabel('A (mm)')
@@ -111,7 +120,7 @@ ax.set_zlabel('S (mm)')
 
 ax = fig.add_subplot(1, 4, 3, projection='3d') 
 sc = ax.scatter(X, Y, Z, c=mean_r_states[-1,:],cmap='coolwarm')
-plt.colorbar(sc,ax=ax)
+plt.colorbar(sc,ax=ax,fraction=0.046, pad=0.4)
 ax.set_title('average over all \n stationary states \n $\delta = $'+str(np.round(1./lamda,2)))
 ax.set_xlabel('R (mm)')
 ax.set_ylabel('A (mm)')
@@ -121,6 +130,11 @@ axH = fig.add_subplot(1, 4, 4)
 axH.hist(mean_r_states[0,:],bins=40,alpha=0.3,label='start')
 axH.hist(mean_r_states[-1,:],bins=40,alpha=0.3,label='convergence')
 axH.legend()
+
+fig.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
+fig.text( x= 0.22, y = 0.95 ,s='B', fontsize=14)
+fig.text( x= 0.52, y = 0.95 ,s='C', fontsize=14)
+fig.text( x= 0.72, y = 0.95 ,s='D', fontsize=14)
 
 plt.show()
 
@@ -255,24 +269,32 @@ for r in range(5):
 #plt.show()
 
 if True:   
-    f,ax=plt.subplots(1,2,figsize=(10,4))
+    f,ax=plt.subplots(2,1,figsize=(4,10))
     f.subplots_adjust(top=0.963, bottom=0.156, left=0.078, right=0.985, hspace=1.0, wspace=0.25)
     f.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
-    f.text( x= 0.52, y = 0.95 ,s='B', fontsize=14)
+    f.text( x= 0.01, y = 0.45 ,s='B', fontsize=14)
+    
+    f2,axs1=plt.subplots(2,1,figsize=(4,10))
+    f2.subplots_adjust(top=0.963, bottom=0.156, left=0.078, right=0.985, hspace=1.0, wspace=0.25)
+    f2.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
+    f2.text( x= 0.01, y = 0.45 ,s='B', fontsize=14)
     #ax[0].set_title('lambda'+str(lamda))
-    f,axComp=plt.subplots(1,2,figsize=(10,4))
-    f.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
-    f.text( x= 0.5, y = 0.95 ,s='B', fontsize=14)
+    #f,axComp=plt.subplots(1,2,figsize=(10,4))
+    #f.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
+    #f.text( x= 0.5, y = 0.95 ,s='B', fontsize=14)
     #axComp[0].set_title('A', loc='left')
     #axComp[1].set_title('B', loc='left')
     rs = []
     binnedBd = [] 
+    rsKeys = [0.5*(ra+rb) for ra,rb in zip(bins[:-1],bins[1:])]
+    binnedBdDict = {rk:[]  for rk in rsKeys}
     binnedSr = [] 
     for r in range(runs):
         rsTemp = []
         binnedBdTemp = [] 
         for ra,rb in zip(bins[:-1],bins[1:]):
             gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
+            binnedBdDict[0.5*(ra+rb)] = binnedBdDict[0.5*(ra+rb)] + np.array(Bd[r])[gate].tolist()
             binnedBdTemp.append(np.mean(np.array(Bd[r])[gate]))
             rsTemp.append(0.5*(ra+rb))
         binnedBd = binnedBd + binnedBdTemp
@@ -280,10 +302,10 @@ if True:
 
         binnedSrTemp = 2*(binnedBdTemp[0] - binnedBdTemp)
         binnedSr = binnedSr + binnedSrTemp.tolist()
-        ax[1].plot(np.log(rsTemp),np.log(binnedBdTemp))#,s=4,alpha=0.8)
-        ax[0].plot(np.log(rsTemp),np.log(binnedSrTemp))#,s=4,alpha=0.8)
-        axComp[1].plot(np.log(rsTemp),np.log(binnedBdTemp)/np.log(rsTemp))#,s=4,alpha=0.8)
-        axComp[0].plot(np.log(rsTemp),np.log(binnedSrTemp)/np.log(rsTemp))#,s=4,alpha=0.8)
+        ax[0].plot(np.log(rsTemp),np.log(binnedBdTemp))#,s=4,alpha=0.8)
+        ax[1].plot(np.log(rsTemp),np.log(binnedSrTemp))#,s=4,alpha=0.8)
+        #axComp[1].plot(np.log(rsTemp),np.log(binnedBdTemp)/np.log(rsTemp))#,s=4,alpha=0.8)
+        #axComp[0].plot(np.log(rsTemp),np.log(binnedSrTemp)/np.log(rsTemp))#,s=4,alpha=0.8)
         rs = rs + rsTemp
         
 
@@ -291,6 +313,12 @@ if True:
     #plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
     #plt.scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
     #ax[1].plot([2,fitxlim],[-0.1,-0.1 -(1.5*0.5)],'k--',alpha=0.6)
+    print('binnedBd.shape',np.array(binnedBd).shape)
+    for rk in rsKeys:
+        log_binBd_rk = np.log(binnedBdDict[rk])
+        axs1[0].scatter(np.log([rk]*len(log_binBd_rk)),log_binBd_rk,alpha=0.02)
+        axs1[0].scatter(np.log(rk),np.mean(log_binBd_rk),color='red')
+    
     x=np.log(rs)
     y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
     gate= np.logical_and(np.logical_and(x>2, x<fitxlim),np.isfinite(y))
@@ -302,30 +330,30 @@ if True:
     alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
     print('coef log B(r)',alpha)
     xline = np.arange(1,5.5,0.1) #np.array([1,5.5])
-    ax[1].plot(xline, alpha[0]*xline + alpha[1], 'r--',label='slope fit '+"%.3f" % alpha[0])
-    ax[1].plot([1,5.5],[-0.05,-1 + 4.5*(-0.5)],'k--',alpha=0.8,label='slope = -1/2 Deco')
-    ax[1].plot([1,5.5],[-0.05,-1 + 4.5*(-0.66)],'k--',alpha=0.4,label='slope = -2/3 Turbulence')
-    ax[1].set_ylabel(r'$\log( B(r) )$')
-    ax[1].set_xlabel(r'$\log( r )$')
-    ax[1].set_xlim((1,5.5))
-    ax[1].set_ylim((-7,0.4))
-    #ax[1].text(2.5, 0, 'slope = '+str(alpha[0]), fontsize=8)
-    ax[1].axvline(2,color='gray')
-    ax[1].axvline(fitxlim,color='gray')
-    ax[1].legend()
+    ax[0].plot(xline, alpha[0]*xline + alpha[1], 'b--',label='slope fit '+"%.3f" % alpha[0])
+    ax[0].plot([1,5.5],[-0.05,-1 + 4.5*(-0.5)],'k--',alpha=0.8,label='slope = -1/2 Deco')
+    ax[0].plot([1,5.5],[-0.05,-1 + 4.5*(-0.66)],'k--',alpha=0.4,label='slope = -2/3 Turbulence')
+    ax[0].set_ylabel(r'$\log( B(d) )$')
+    ax[0].set_xlabel(r'$\log( d )$')
+    ax[0].set_xlim((1,5.5))
+    ax[0].set_ylim((-7,0.4))
+    #ax[0].text(2.5, 0, 'slope = '+str(alpha[0]), fontsize=8)
+    ax[0].axvline(2,color='gray')
+    ax[0].axvline(fitxlim,color='gray')
+    ax[0].legend()
 
 
-    axComp[1].plot(xline, alpha[0] + alpha[1]/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
+    #axComp[1].plot(xline, alpha[0] + alpha[1]/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
     #axComp[1].plot(xline, (alpha[0]*xline + alpha[1])/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
     #axComp[1].plot([1,5.5],[-0.05,-1 + (-0.5)],'k--',alpha=0.8,label='slope = -1/2 Deco')
     #axComp[1].plot([1,5.5],[-0.05,-1 + (-0.66)],'k--',alpha=0.4,label='slope = -2/3 Turbulence')
 
-    axComp[1].set_ylabel(r'$  \dfrac{\log( B(r) )}{\log( r )} $')#.set_ylabel('log( B(r) )/log( r )')
-    axComp[1].set_xlabel(r'$ \log( r )$')
-    axComp[1].set_xlim((1,5.5))
-    axComp[1].axvline(2,color='gray')
-    axComp[1].axvline(fitxlim,color='gray')
-    axComp[1].legend()
+    #axComp[1].set_ylabel(r'$  \dfrac{\log( B(r) )}{\log( r )} $')#.set_ylabel('log( B(r) )/log( r )')
+    #axComp[1].set_xlabel(r'$ \log( r )$')
+    #axComp[1].set_xlim((1,5.5))
+    #axComp[1].axvline(2,color='gray')
+    #axComp[1].axvline(fitxlim,color='gray')
+    #axComp[1].legend()
     
     #axComp[1].set_ylim((-7,0.4))
 
@@ -348,28 +376,28 @@ if True:
         alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
         print('coef log S(r)',alpha)
         xline = np.arange(1,5.5,0.1) #np.array([1,5.5])
-        ax[0].plot(xline, alpha[0]*xline + alpha[1], 'k--',label='slope fit '+"%.3f" % alpha[0])
-        axComp[0].plot(xline, alpha[0] + alpha[1]/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
+        ax[1].plot(xline, alpha[0]*xline + alpha[1], 'b--',label='slope fit '+"%.3f" % alpha[0])
+        #axComp[0].plot(xline, alpha[0] + alpha[1]/xline, 'k--',label='slope fit '+"%.3f" % alpha[0])
     except np.linalg.LinAlgError as err:
         if 'Singular matrix' in str(err):
             print('singular')
 
-    ax[0].set_ylabel('log( S(r) )')
-    ax[0].set_xlabel('log( r )')
-    ax[0].set_xlim((1,5.5))
-    ax[0].set_ylim((-2,1.77))
-    ax[0].plot([1,5.5],[-0.05,-0.1 + 4.5*0.5],'k--',alpha=0.8,label='slope = 1/2 Deco')
-    ax[0].plot([1,5.5],[-0.05,-0.1 + 4.5*0.66],'k--',alpha=0.4,label='slope = 2/3 Turbulence')
-    ax[0].axvline(2,color='gray')
-    ax[0].axvline(fitxlim,color='gray')
+    ax[1].set_ylabel(r'$\log( S_2(d) )$')
+    ax[1].set_xlabel(r'$\log( d )$')
+    ax[1].set_xlim((1,5.5))
+    ax[1].set_ylim((-2,1.77))
+    ax[1].plot([1,5.5],[-0.05,-0.1 + 4.5*0.5],'k--',alpha=0.8,label='slope = 1/2 Deco')
+    ax[1].plot([1,5.5],[-0.05,-0.1 + 4.5*0.66],'k--',alpha=0.4,label='slope = 2/3 Turbulence')
+    ax[1].axvline(2,color='gray')
+    ax[1].axvline(fitxlim,color='gray')
 
     
-    axComp[0].set_ylabel(r'$  \dfrac{\log( S(r) )}{\log( r )} $')
-    axComp[0].set_xlabel(r'$ \log( r )$')
-    axComp[0].set_xlim((1,5.5))
-    axComp[0].axvline(2,color='gray')
-    axComp[0].axvline(fitxlim,color='gray')
-    axComp[0].legend()
+    #axComp[0].set_ylabel(r'$  \dfrac{\log( S(r) )}{\log( r )} $')
+    #axComp[0].set_xlabel(r'$ \log( r )$')
+    #axComp[0].set_xlim((1,5.5))
+    #axComp[0].axvline(2,color='gray')
+    #axComp[0].axvline(fitxlim,color='gray')
+    #axComp[0].legend()
 
 
 
@@ -377,6 +405,5 @@ if True:
     #ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
     #ax[0].text(4, 1, 'slope = '+"%.2f" % alpha[0], fontsize=8)
     ax[0].legend()
-    plt.tight_layout()
     plt.savefig('structure'+str(lamda)+'.pdf')
 plt.show()

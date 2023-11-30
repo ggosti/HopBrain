@@ -111,7 +111,7 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
 # plot stuff
 
 def plotInitalJ(X, Y, Z,dist,J,uniqDist):
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(4,5))
     ax = fig.add_subplot(2, 2, 1,projection='3d')
     ax.scatter(X, Y, Z,s=1)
 
@@ -121,12 +121,15 @@ def plotInitalJ(X, Y, Z,dist,J,uniqDist):
     
     ax = fig.add_subplot(2, 2, 2)
     h,bins,f= ax.hist(uniqDist,bins=100)
-    ax.set_xlabel('d(i,j)')
+    ax.set_xlabel(r'$d_{ij}$')
     ax.set_ylabel('frequency')
+    ax.set_xlim((0,180))
+    ax.set_ylim((0,120))
+    ax.set_box_aspect(1)
     #ax.set_title('unique distance')
     
     ax = fig.add_subplot(2, 2, 3)
-    ax.set_title(r'$d(i,j)$')
+    ax.set_title(r'$d_{ij}$')
     ax.imshow(dist)
     
     ax = fig.add_subplot(2, 2, 4)
@@ -134,16 +137,16 @@ def plotInitalJ(X, Y, Z,dist,J,uniqDist):
     ax.imshow(J>0.04)
 
     fig.text( x= 0.01, y = 0.95 ,s='A', fontsize=14)
-    fig.text( x= 0.44, y = 0.95 ,s='B', fontsize=14)
+    fig.text( x= 0.5, y = 0.95 ,s='B', fontsize=14)
     fig.text( x= 0.01, y = 0.45 ,s='C', fontsize=14)
-    fig.text( x= 0.44, y = 0.45 ,s='D', fontsize=14)
+    fig.text( x= 0.5, y = 0.45 ,s='D', fontsize=14)
     fig.tight_layout()
 
-    f,[ax0,ax1,ax2]=plt.subplots(1,3)
-    ax0.imshow(J>0.04)
+    #f,[ax0,ax1,ax2]=plt.subplots(1,3)
+    #ax0.imshow(J>0.04)
 
-    ax1.set_title('J = np.exp(-0.18*dist) ')
-    ax1.imshow(J)
+    #ax1.set_title('J = np.exp(-0.18*dist) ')
+    #ax1.imshow(J)
 
-    ax2.set_title('J>0.04')
-    ax2.imshow(J>0.04)
+    #ax2.set_title('J>0.04')
+    #ax2.imshow(J>0.04)

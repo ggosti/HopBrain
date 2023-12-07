@@ -295,8 +295,12 @@ if True:
         for ra,rb in zip(bins[:-1],bins[1:]):
             gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
             binnedBdDict[0.5*(ra+rb)] = binnedBdDict[0.5*(ra+rb)] + np.array(Bd[r])[gate].tolist()
-            binnedBdTemp.append(np.mean(np.array(Bd[r])[gate]))
+            meanBd_r_binned = np.mean(np.array(Bd[r])[gate])
+            stdBd_r_binned = np.std(np.array(Bd[r])[gate])
+            numBd_r_binned = len(np.array(Bd[r])[gate])
+            binnedBdTemp.append(meanBd_r_binned)
             rsTemp.append(0.5*(ra+rb))
+            print('bin',ra,rb,meanBd_r_binned,stdBd_r_binned,numBd_r_binned),
         binnedBd = binnedBd + binnedBdTemp
         binnedBdTemp = np.array(binnedBdTemp)
 
@@ -314,10 +318,14 @@ if True:
     #plt.scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
     #ax[1].plot([2,fitxlim],[-0.1,-0.1 -(1.5*0.5)],'k--',alpha=0.6)
     print('binnedBd.shape',np.array(binnedBd).shape)
-    for rk in rsKeys:
+    rsPlot = [rk for rk in rsKeys]
+    rsPlot.sort()
+    binnedBdmeanPlot = [np.mean(binnedBdDict[rk]) for rk in rsPlot]
+    for rk in rsPlot:
         log_binBd_rk = np.log(binnedBdDict[rk])
         axs1[0].scatter(np.log([rk]*len(log_binBd_rk)),log_binBd_rk,alpha=0.02)
         axs1[0].scatter(np.log(rk),np.mean(log_binBd_rk),color='red')
+    axs1[0].plot(np.log(rsKeys),np.mean(binnedBdmeanPlot),color='red')
     
     x=np.log(rs)
     y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]

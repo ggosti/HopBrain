@@ -36,7 +36,8 @@ plt.title('unique distance')
 lamda = 0.18#0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
-tb.plotInitalJ(X, Y, Z,dist,J)
+#tb.plotInitalJ(X, Y, Z,dist,J)
+tb.plotInitalJ(X, Y, Z,dist,J,uniqDist)
 
 np.random.seed(8792)
 
@@ -52,7 +53,7 @@ alphasSrAggrRun = []
 runsList = []
 brsDict = {}
 brsDict = {}
-
+SDict = {}
 
 for lambd in lambdas:
     print('Lambda',lambd)
@@ -104,6 +105,7 @@ for lambd in lambdas:
             #Bd[r] = BdRun
             t1 = time.time()
             Bd[r] = BdRun
+            SDict['lambd'+str(lambd)+'run'+str(r)] = states[r,-1,:]
     else:
         for r in range(runs):
             print('run',r)
@@ -199,6 +201,7 @@ for lambd in lambdas:
 
 df0 = pd.DataFrame({'alphaRuns':alphaSrRuns,'lambdas':lambdasRuns,'run':runsList})
 df1 = pd.DataFrame(brsDict)
+df2 = pd.DataFrame(SDict)
 
 strng = '' 
 if autapse: strng = strng+'-autapse'
@@ -207,7 +210,7 @@ print(strng)
 
 df0.to_csv('parametersRuns'+strng+'.csv', index=False)
 df1.to_csv('BdRuns'+strng+'.csv', index=False)
-
+df2.to_csv('SRuns'+strng+'.csv', index=False)
 
 plt.show()
 

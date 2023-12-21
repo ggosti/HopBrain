@@ -10,6 +10,7 @@ import matplotlib.ticker
 
 import pandas as pd
 from scipy.spatial import distance
+from scipy import stats
 import time
 
 import turboBrainUtils as tb 
@@ -36,7 +37,7 @@ uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
 #h,bins,f=plt.hist(uniqDist,bins=100)
 #plt.title('unique distance')
 
-lamda = 1./5.55 #1./4 # random. #0.18 #1./6.66 (random walk) #5.99 #0.18
+lamda = 1./5.95 #5.55 fit deco #1./4 # random. #0.18 #1./6.66 (random walk) #5.99 #0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J,uniqDist)
@@ -336,11 +337,12 @@ if True:
     rsPlot.sort()
     binnedBdmeanPlot = [np.mean(binnedBdDict[rk]) for rk in rsPlot]
     binnedBdstdPlot = [np.std(binnedBdDict[rk]) for rk in rsPlot]
+    binnedBdsePlot = [3*np.std(binnedBdDict[rk]/np.sqrt(runs)) for rk in rsPlot]
     #for rk in rsPlot:
     #    binBd_rk = binnedBdDict[rk]
     #    axs1[0].scatter([rk]*len(binBd_rk),binBd_rk,alpha=0.02)
     #    axs1[0].scatter(rk,np.mean(binBd_rk),color='red')
-    axs1[0].errorbar(rsKeys,binnedBdmeanPlot,yerr=binnedBdstdPlot,fmt='k.', ecolor='black',  capsize=3, capthick=1)
+    axs1[0].errorbar(rsKeys,binnedBdmeanPlot,yerr=binnedBdsePlot,fmt='k.', ecolor='black',  capsize=3, capthick=1)
     axs1[0].loglog()
     xline = np.arange(1,5.5,0.1) #np.array([1,5.5])
     axs1[0].plot(np.exp(xline), np.exp(alpha[0]*xline + alpha[1]), '--',color='tab:blue',label='slope fit '+"%.3f" % alpha[0])
@@ -415,7 +417,8 @@ if True:
     #print('binnedBdDict[0]',binnedBdDict[0])
     binnedSdmeanPlot = [np.mean(binnedSdDict[rk]) for rk in rsPlot]
     binnedSdstdPlot = [np.std(binnedSdDict[rk]) for rk in rsPlot]
-    axs1[1].errorbar(rsKeys,binnedSdmeanPlot,yerr=binnedSdstdPlot,fmt='k.', ecolor='black',  capsize=3, capthick=1)
+    binnedSdsePlot = [3*np.std(binnedSdDict[rk])/np.sqrt(runs) for rk in rsPlot]
+    axs1[1].errorbar(rsKeys,binnedSdmeanPlot,yerr=binnedSdsePlot,fmt='k.', ecolor='black',  capsize=3, capthick=1)
     axs1[1].loglog()
     
     xline = np.arange(1,5.5,0.1) #np.array([1,5.5])
@@ -423,7 +426,7 @@ if True:
     axs1[1].plot(np.exp([0,5.5]),np.exp([-.8,-.8 + 5.5*(0.5)]),'--',color='tab:orange',alpha=0.8,label='slope = 1/2 Deco')
     axs1[1].plot(np.exp([0,5.5]),np.exp([-.8,-.8 + 5.5*(0.66)]),'--',color='tab:green',alpha=0.4,label='slope = 2/3 Turbulence')
     
-    axs1[1].set_ylabel(r'$\log( \langle B(d) \rangle)$')
+    axs1[1].set_ylabel(r'$\log( \langle S(d) \rangle)$')
     axs1[1].set_xlabel(r'$\log( d )$')
     axs1[1].set_xticks(np.exp(np.arange(1.5,3.9,0.5)))
     axs1[1].get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())

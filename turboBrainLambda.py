@@ -12,7 +12,7 @@ import time
 
 import turboBrainUtils as tb 
 
-runs = 40
+runs = 1000#40
 passi = 100#200
 autapse = True
 randomize = False
@@ -45,7 +45,7 @@ alphas = []
 
 
 
-lambdas = np.arange(0.10,0.30,0.01)
+lambdas = np.arange(0.10,0.27,0.01)
 
 alphaSrRuns = []
 lambdasRuns = []

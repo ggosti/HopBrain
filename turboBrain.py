@@ -16,7 +16,7 @@ import time
 import turboBrainUtils as tb 
 
 
-runs = 40#100#1000
+runs = 1000#40#100#1000
 passi = 100#200
 autapse = True
 randomize = False
@@ -37,7 +37,7 @@ uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
 #h,bins,f=plt.hist(uniqDist,bins=100)
 #plt.title('unique distance')
 
-lamda = 1./5.95 #5.55 fit deco #1./4 # random. #0.18 #1./6.66 (random walk) #5.99 #0.18
+lamda = 1./5.55 #5.55 fit deco #1./4 # random. #0.18 #1./6.66 (random walk) #5.99 #0.18
 J = tb.makeJ(dist,lamda,autapse,randomize)
 
 tb.plotInitalJ(X, Y, Z,dist,J,uniqDist)

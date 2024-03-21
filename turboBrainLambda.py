@@ -47,12 +47,11 @@ alphas = []
 
 lambdas = np.arange(0.10,0.27,0.01)
 
-alphaSrRuns = []
-lambdasRuns = []
-alphasSrAggrRun = []
-runsList = []
-brsDict = {}
-brsDict = {}
+#alphaSrRuns = []
+#lambdasRuns = []
+#alphasSrAggrRun = []
+#runsList = []
+#brsDict = {}
 SDict = {}
 
 for lambd in lambdas:
@@ -99,23 +98,23 @@ for lambd in lambdas:
     if (numCycle1ConvTime == runs ):
         for r in range(runs):
             print('run on stationary state',r)
-            t0 = time.time()
-            BdRun = tb.computeBr(states[r,:,:],uniqDist,iListList,jListList)
+            #t0 = time.time()
+            #BdRun = tb.computeBr(states[r,:,:],uniqDist,iListList,jListList)
             #print(BdRun[:5],len(BdRun))
             #Bd[r] = BdRun
-            t1 = time.time()
-            Bd[r] = BdRun
+            #t1 = time.time()
+            #Bd[r] = BdRun
             SDict['lambd'+str(lambd)+'run'+str(r)] = states[r,-1,:]
-    else:
-        for r in range(runs):
-            print('run',r)
-            for d,iList,jList in zip(uniqDist,iListList,jListList):
-                #print(d,np.sum(dist==d))
-                cors = []
-                for i,j in zip(iList,jList):
-                    cor = np.mean(states[r,maxConvTime:,i]*states[r,maxConvTime:,j])
-                    cors.append(cor)
-                Bd[r].append(np.mean(cors))
+    #else:
+        #for r in range(runs):
+        #    print('run',r)
+        #    for d,iList,jList in zip(uniqDist,iListList,jListList):
+        #        #print(d,np.sum(dist==d))
+        #        cors = []
+        #        for i,j in zip(iList,jList):
+        #            cor = np.mean(states[r,maxConvTime:,i]*states[r,maxConvTime:,j])
+        #            cors.append(cor)
+        #        Bd[r].append(np.mean(cors))
 
         #plt.figure()
         #for r in range(runs):
@@ -132,75 +131,8 @@ for lambd in lambdas:
 
 
 
-
-    f,ax=plt.subplots(5,2)
-
-    for r in range(runs):
-        rs = []
-        binnedBd = [] 
-        for ra,rb in zip(bins[:-1],bins[1:]):
-            gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
-            binnedBd.append(np.mean(np.array(Bd[r])[gate]))
-            rs.append(0.5*(ra+rb))
-        binnedBd = np.array(binnedBd)
-        
-
-        x=np.log(rs)
-        y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
-        gate= np.logical_and(np.logical_and(x>2, x<3.5),np.isfinite(y))
-        x=x[gate]
-        y=y[gate]
-        
-
-        A = np.vstack([x, np.ones(len(x))]).T
-        #print(x,y)
-        # Direct least square regression
-        alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-        print('coef log B(r)',alpha)
-
-
-
-        binnedSr = 2*(binnedBd[0] - binnedBd)
-        y=np.log(binnedSr)
-        y=y[gate]
-        A = np.vstack([x, np.ones(len(x))]).T
-        #print(x,y)
-        # Direct least square regression
-        alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-        print('coef log S(r)',alpha)
-        alphaSrRuns.append(alpha[0])
-        lambdasRuns.append(lambd)
-        runsList.append(r)
-        if not 'bins' in brsDict: brsDict['bins'] = np.array(rs)
-        brsDict['lambd'+str(lambd)+'run'+str(r)] = binnedBd
-
-
-        if r < 5:
-            #draw single run Br
-            ax[r,1].scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
-            ax[r,1].scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
-            ax[r,1].plot([2,3.5],[-0.1,-0.1 -(1.5*0.5)],'r')
-            #plt.xlim((2,4))
-            ax[r,1].plot(x, alpha[0]*x + alpha[1], '-g')
-            ax[r,1].set_ylabel('log( B(r) )')
-            ax[r,1].set_xlabel('log( r )')
-            ax[r,1].set_xlim((1,5.5))
-            ax[r,1].set_ylim((-12,1))
-            ax[r,1].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
-            # draw single run Sr
-            ax[r,0].scatter(np.log(rs),np.log(binnedSr ),alpha=0.4)
-            ax[r,0].plot([2,3.5],[-0.1,-0.1 + 1.5*0.5],'r')            
-            ax[r,0].plot(x, alpha[0]*x + alpha[1], '-g')
-            ax[r,0].set_ylabel('log( S(r) )')
-            ax[r,0].set_xlabel('log( r )')
-            ax[r,0].set_xlim((1,5.5))
-            ax[r,0].set_ylim((-5,2))
-            ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
-            #ax[r,0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
-
-
-df0 = pd.DataFrame({'alphaRuns':alphaSrRuns,'lambdas':lambdasRuns,'run':runsList})
-df1 = pd.DataFrame(brsDict)
+#df0 = pd.DataFrame({'alphaRuns':alphaSrRuns,'lambdas':lambdasRuns,'run':runsList})
+#df1 = pd.DataFrame(brsDict)
 df2 = pd.DataFrame(SDict)
 
 strng = '' 
@@ -208,8 +140,8 @@ if autapse: strng = strng+'-autapse'
 if randomize: strng = strng+'-randomizeJ'
 print(strng)
 
-df0.to_csv('parametersRuns'+strng+'.csv', index=False)
-df1.to_csv('BdRuns'+strng+'.csv', index=False)
+#df0.to_csv('parametersRuns'+strng+'.csv', index=False)
+#df1.to_csv('BdRuns'+strng+'.csv', index=False)
 df2.to_csv('SRuns'+strng+'.csv', index=False)
 
 plt.show()

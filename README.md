@@ -4,16 +4,18 @@ Full brain mass model simulation using Hopfield Recurrent Neural Networks with S
 ## Run simulations 
 
 To run simulations run
-'''
+```
 python turboBrainLambda.py
-'''
+```
 the lines in the script from 11 to 22 allow you to change parameters.
-The stady state are saved in 'SRuns-autapse.csv' and in 'parametersRuns-autapse.csv' are saved the labdas used in the simulations.
+The stady state are saved in `SRuns-autapse.csv` and in `parametersRuns-autapse.csv` are saved the labdas used in the simulations.
 
 ## Make the Structure Functions Sd
 
 To run simulations run
-'''
+```
 python makeBinnedSd.py
-'''
+```
 the lines in the script from 11 to 22 allow you to change parameters.
+Binned strucutre function mean on runs and the standard deviation are saved as files `binnedSd_mean.npy`
+and `binnedSd_std.npy`

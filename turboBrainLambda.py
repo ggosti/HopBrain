@@ -15,7 +15,7 @@ import turboBrainUtils as tb
 runs = 1000#40
 passi = 100#200
 autapse = True
-randomize = False
+randomize = False#True #False
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
@@ -45,17 +45,18 @@ alphas = []
 
 
 
-lambdas = np.arange(0.10,0.27,0.01)
+lambdas = np.arange(0.10,0.27,0.01)#np.arange(0.10,0.27,0.01)
 
 #alphaSrRuns = []
-#lambdasRuns = []
+lambdasRuns = []
 #alphasSrAggrRun = []
-#runsList = []
+runsList = []
 #brsDict = {}
 SDict = {}
 
 for lambd in lambdas:
     print('Lambda',lambd)
+    lambdasRuns.append(lambd)
     J = tb.makeJ(dist,lambd,autapse,randomize)
     #plt.figure()
     #plt.title('J = np.exp(-0.18*dist) ')
@@ -75,10 +76,10 @@ for lambd in lambdas:
         stasteRun,Cdt1 = tb.run(J, N, passi)
         states[r,:,:] = stasteRun
         cycle1ConvTime.append(np.argmax(Cdt1>=1.))
-        if r<5:    
-            f,axs=plt.subplots(2)
-            axs[0].imshow(stasteRun.T)
-            axs[1].plot(Cdt1)
+        #if r<5:    
+        #    f,axs=plt.subplots(2)
+        #    axs[0].imshow(stasteRun.T)
+        #    axs[1].plot(Cdt1)
 
 
     #plt.figure()
@@ -130,8 +131,7 @@ for lambd in lambdas:
     #plt.show()
 
 
-
-#df0 = pd.DataFrame({'alphaRuns':alphaSrRuns,'lambdas':lambdasRuns,'run':runsList})
+df0 = pd.DataFrame({'lambdas':lambdasRuns})
 #df1 = pd.DataFrame(brsDict)
 df2 = pd.DataFrame(SDict)
 
@@ -140,7 +140,7 @@ if autapse: strng = strng+'-autapse'
 if randomize: strng = strng+'-randomizeJ'
 print(strng)
 
-#df0.to_csv('parametersRuns'+strng+'.csv', index=False)
+df0.to_csv('lamdaValues'+strng+'.csv', index=False)
 #df1.to_csv('BdRuns'+strng+'.csv', index=False)
 df2.to_csv('SRuns'+strng+'.csv', index=False)
 

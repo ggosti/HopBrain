@@ -15,11 +15,12 @@ import turboBrainUtils as tb
 runs = 1000#40
 passi = 100#200
 autapse = True
-randomize = False#True #False
+randomize = True#True #False
+parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
-df = pd.read_csv('Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv')
+df = pd.read_csv(parcelsName)
 df.head()
 X = df['R']
 Y = df['A']
@@ -145,104 +146,3 @@ df0.to_csv('lamdaValues'+strng+'.csv', index=False)
 df2.to_csv('SRuns'+strng+'.csv', index=False)
 
 plt.show()
-
-
-
-
-"""
-    
-    f,ax=plt.subplots(1,2)
-    rs = []
-    binnedBd = [] 
-    binnedSr = [] 
-    ax[0].set_title('lambd'+str(lambd))
-    for r in range(runs):
-        rsTemp = []
-        binnedBdTemp = [] 
-        for ra,rb in zip(bins[:-1],bins[1:]):
-            gate = np.logical_and(uniqDist>=ra, uniqDist<=rb)
-            binnedBdTemp.append(np.mean(np.array(Bd[r])[gate]))
-            rsTemp.append(0.5*(ra+rb))
-        binnedBd = binnedBd + binnedBdTemp
-        binnedBdTemp = np.array(binnedBdTemp)
-
-        binnedSrTemp = 2*(binnedBdTemp[0] - binnedBdTemp)
-        binnedSr = binnedSr + binnedSrTemp.tolist()
-        ax[1].scatter(np.log(rsTemp),np.log(binnedBdTemp),s=1,alpha=0.2)
-        ax[0].scatter(np.log(rsTemp),np.log(binnedSrTemp),s=1,alpha=0.2)
-        rs = rs + rsTemp
-        
-
-
-    #plt.scatter(np.log(uniqDist),np.log(Bd[r]),alpha=0.4)
-    #plt.scatter(np.log(rs),np.log(binnedBd),alpha=0.4)
-    ax[1].plot([2,3.5],[-0.1,-0.1 -(1.5*0.5)],'r')
-    x=np.log(rs)
-    y=np.log(binnedBd)#[np.logical_and(x>2, x<4)]
-    gate= np.logical_and(np.logical_and(x>2, x<3.5),np.isfinite(y))
-    x=x[gate]
-    y=y[gate]
-
-    A = np.vstack([x, np.ones(len(x))]).T
-    # Direct least square regression
-    alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-    print('coef log B(r)',alpha)
-    ax[1].plot(x, alpha[0]*x + alpha[1], '-g')
-    ax[1].set_ylabel('log( B(r) )')
-    ax[1].set_xlabel('log( r )')
-    ax[1].set_xlim((1,5.5))
-    ax[1].set_ylim((-12,1))
-    ax[1].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
-
-
-
-    y=np.log(binnedSr)#[np.logical_and(x>2, x<4)]
-    y=y[gate]
-
-    gate2 = np.isfinite(y)
-    #print(np.logical_not(gate2))
-    #print(y)
-    if np.logical_not(gate2).any():
-        #print('values that get nan in log ',y[np.logical_not(gate2)])
-        y=y[gate2]
-        x=x[gate2]
-
-    A = np.vstack([x, np.ones(len(x))]).T
-    # Direct least square regression
-    alpha = np.dot((np.dot(np.linalg.inv(np.dot(A.T,A)),A.T)),y)
-    print('coef log S(r)',alpha)
-    ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
-
-    ax[0].set_ylabel('log( S(r) )')
-    ax[0].set_xlabel('log( r )')
-    ax[0].set_xlim((1,5.5))
-    ax[0].set_ylim((-5,2))
-    ax[0].plot([2,3.5],[-0.1,-0.1 + 1.5*0.5],'r')
-
-    ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
-    ax[0].text(2, -4, 'slope = '+str(alpha[0]), fontsize=12)
-    alphas.append(alpha[0])
-    alphasSrAggrRun = alphasSrAggrRun + [alpha[0]]*runs 
-    plt.savefig('structure'+str(lambd)+'.pdf')
-
-df = pd.DataFrame(
-    {'lambdas': lambdas,
-     'alphas': alphas
-    })
-df.to_csv('parameters.csv', index=False)
-
-plt.figure()
-plt.plot(lambdas,alphas)
-plt.axvline(x = 0.18, color='r')
-plt.ylabel('slope $\log S(r)$')
-plt.xlabel('lambda (mm$^{-1}$)')
-#plt.show()
-
-df0 = pd.DataFrame(
-    {'alphaRuns':alphaSrRuns,
-     'lambdas':lambdasRuns,
-      'alphaAgr':alphasSrAggrRun,
-      'run':runsList})
-df0.to_csv('parametersRuns.csv', index=False)
-
-"""

@@ -15,7 +15,7 @@ import turboBrainUtils as tb
 runs = 1000#40
 passi = 100#200
 autapse = True
-randomize = True#True #False
+randomize = False#True #False
 parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 # # Parcellizzazione

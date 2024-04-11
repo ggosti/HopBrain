@@ -19,6 +19,12 @@ autapse = True
 randomize = False
 parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
+strng = '' 
+if autapse: strng = strng+'-autapse'
+if randomize: strng = strng+'-randomizeJ'
+strng = strng+'-thJ'
+print(strng)
+
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
 df = pd.read_csv(parcelsName)
@@ -44,10 +50,9 @@ np.random.seed(8792)
 
 alphas = []
 
-
-
 lambdas = np.arange(0.10,0.30,0.01)
 ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9]
+
 
 #alphaSrRuns = []
 lambdasRuns = []
@@ -55,7 +60,7 @@ thsRuns = []
 dilsRuns = []
 #alphasSrAggrRun = []
 runsList = []
-SDict = {}
+#SDict = {}
 #SList = []
 
 for thJ in ths:
@@ -106,7 +111,7 @@ for thJ in ths:
         #plt.show()
 
         #Bd = [[] for r in range(runs)]
-        SDictRun = {}
+        #SDictRun = {}
         if (numCycle1ConvTime == runs ):
             for r in range(runs):
                 #print('run on stationary state',r)
@@ -116,7 +121,8 @@ for thJ in ths:
                 #Bd[r] = BdRun
                 #t1 = time.time()
                 #Bd[r] = BdRun
-                SDict['lambd'+str(lambd)+'thJ'+str(thJ)+'run'+str(r)] = states[r,-1,:]
+                #SDict['lambd'+str(lambd)+'thJ'+str(thJ)+'run'+str(r)] = states[r,-1,:]
+                SDictRunLambda['lambd'+str(lambd)+'run'+str(r)] = states[r,-1,:]
                 # load data
                 lambdasRuns.append(lambd)
                 thsRuns.append(thJ)
@@ -124,20 +130,18 @@ for thJ in ths:
                 dil = np.sum( (np.sum(J==0) - N)/(N*N - N))
                 dilsRuns.append(dil)
                 #SList.append({'lambda':lambd,'thJ':thJ,'r':r,'dil':dil,'states':states[r,-1,:].tolist()})
+        df2 = pd.DataFrame(SDictRunLambda)
+    df2.to_csv('SRuns'+strng+'-'+str(thJ)+'.csv', index=False)
         
 df0 = pd.DataFrame({'lambdas':lambdasRuns,'thsRuns':thsRuns,'dilsRuns':dilsRuns,'run':runsList})
 #df1 = pd.DataFrame(brsDict)
-df2 = pd.DataFrame(SDict)
 
-strng = '' 
-if autapse: strng = strng+'-autapse'
-if randomize: strng = strng+'-randomizeJ'
-strng = strng+'-thJ'
-print(strng)
+
+
 
 df0.to_csv('lamdaValues'+strng+'.csv', index=False)
 #df1.to_csv('BdRuns'+strng+'.csv', index=False)
-df2.to_csv('SRuns'+strng+'.csv', index=False)
+#df2.to_csv('SRuns'+strng+'.csv', index=False)
 
 #with open('SRuns'+strng+'.json','w',encoding='utf-8') as f:
 #    json.dump(SList,f,ensure_ascii=False,indent=4)

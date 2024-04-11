@@ -158,9 +158,7 @@ for thJ in ths:
             axs[1,1].plot(np.exp([0,5.5]),np.exp([itc,itc + 5.5*(0.66)]),'--',color='tab:green',label='slope = 2/3 Turbulence')
     t1 = time.time()
     print('make sd time',t1-t0)
-
-
-    np.save('binnedBd_mean'+strng+'-'+str(thJ)arBinnedBd_mean)
+    np.save('binnedBd_mean'+strng+'-'+str(thJ),arBinnedBd_mean)
     np.save('binnedBd_std'+strng+'-'+str(thJ),arBinnedBd_std)
     np.save('binnedSd_mean'+strng+'-'+str(thJ),arBinnedSd_mean)
     np.save('binnedSd_std'+strng+'-'+str(thJ),arBinnedSd_std)

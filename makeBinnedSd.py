@@ -83,7 +83,7 @@ arBinnedSd_std[:] = np.nan
 #linxs = range(len(lambdas))
 
 t0 = time.time()
-for i in [7,8]:#range(len(lambdas)):
+for i in range(len(lambdas)):
     BdRuns = []
     SdRuns = []
     print(i,lambdas[i],1./lambdas[i])
@@ -158,7 +158,7 @@ print('make sd time',t1-t0)
 plt.show()
 
 
-np.save('binnedBd_mean'+strng,arBinnedSd_mean)
-np.save('binnedBd_std'+strng,arBinnedSd_std)
+np.save('binnedBd_mean'+strng,arBinnedBd_mean)
+np.save('binnedBd_std'+strng,arBinnedBd_std)
 np.save('binnedSd_mean'+strng,arBinnedSd_mean)
 np.save('binnedSd_std'+strng,arBinnedSd_std)

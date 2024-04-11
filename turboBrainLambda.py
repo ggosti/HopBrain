@@ -96,7 +96,7 @@ for lambd in lambdas:
 
     #plt.show()
 
-    Bd = [[] for r in range(runs)]
+    #Bd = [[] for r in range(runs)]
     if (numCycle1ConvTime == runs ):
         for r in range(runs):
             print('run on stationary state',r)

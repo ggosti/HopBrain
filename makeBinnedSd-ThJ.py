@@ -20,7 +20,7 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
 runs = 1000#40
 passi = 100#200
 autapse = True
-randomize = True#True #False
+randomize = False#True #False
 parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 fitxlim = 3.5 
@@ -48,15 +48,16 @@ uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
 h,bins,f=plt.hist(uniqDist,bins=nBins,histtype="step", density=True)
 
 df = pd.read_csv('lamdaValues'+strng+'.csv')
-print('read parametersRuns'+strng+'.csv')
+print('read lamdaValues'+strng+'.csv')
 lambdas = np.unique(df['lambdas'].values)
 print(lambdas)
 
 ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9]
 
 for thJ in ths:
-    df3 = pd.read_csv('SRuns'+strng+'.csv')
-    print('read SRuns'+strng+'.csv',df3.shape)
+    strngTemp = strng+'-thJ-'+str(thJ)
+    df3 = pd.read_csv('SRuns'+strngTemp+'.csv')
+    print('read SRuns'+strngTemp+'.csv',df3.shape)
 
     states = np.zeros((len(lambdas),runs,N))
     SName = list(df3.columns)#[1:]
@@ -158,9 +159,9 @@ for thJ in ths:
             axs[1,1].plot(np.exp([0,5.5]),np.exp([itc,itc + 5.5*(0.66)]),'--',color='tab:green',label='slope = 2/3 Turbulence')
     t1 = time.time()
     print('make sd time',t1-t0)
-    np.save('binnedBd_mean'+strng+'-'+str(thJ),arBinnedBd_mean)
-    np.save('binnedBd_std'+strng+'-'+str(thJ),arBinnedBd_std)
-    np.save('binnedSd_mean'+strng+'-'+str(thJ),arBinnedSd_mean)
-    np.save('binnedSd_std'+strng+'-'+str(thJ),arBinnedSd_std)
+    np.save('binnedBd_mean'+strngTemp,arBinnedBd_mean)
+    np.save('binnedBd_std'+strngTemp,arBinnedBd_std)
+    np.save('binnedSd_mean'+strngTemp,arBinnedSd_mean)
+    np.save('binnedSd_std'+strngTemp,arBinnedSd_std)
 
 plt.show()

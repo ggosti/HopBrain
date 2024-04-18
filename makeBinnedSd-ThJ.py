@@ -29,6 +29,7 @@ nBins = 100
 strng = '' 
 if autapse: strng = strng+'-autapse'
 if randomize: strng = strng+'-randomizeJ'
+strng = strng+'-thJ'
 print(strng)
 
 # # Parcellizzazione
@@ -49,13 +50,21 @@ h,bins,f=plt.hist(uniqDist,bins=nBins,histtype="step", density=True)
 
 df = pd.read_csv('lamdaValues'+strng+'.csv')
 print('read lamdaValues'+strng+'.csv')
-lambdas = np.unique(df['lambdas'].values)
-print(lambdas)
 
-ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9]
+ths = np.unique(df['thsRuns'].values)
+print(ths)
+print([0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9])
+#ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9]
 
 for thJ in ths:
-    strngTemp = strng+'-thJ-'+str(thJ)
+    dfTh = df[df['thsRuns']==thJ]
+    lambdas = np.unique(dfTh['lambdas'].values)
+    #lambdas = np.unique(df['lambdas'].values)
+    print('lambdas',len(lambdas))
+    print(lambdas)
+    
+    strngTemp = strng+'-'+str(thJ)
+    print('read SRuns'+strngTemp+'.csv')
     df3 = pd.read_csv('SRuns'+strngTemp+'.csv')
     print('read SRuns'+strngTemp+'.csv',df3.shape)
 

@@ -69,7 +69,7 @@ for parcelsName in parcelsNames:
         print('Lambda',lambd,'N',N)
         J = tb.makeJ(dist,lambd,autapse,randomize)
         #print(J[:4,:4], (J<thJ)[:4,:4], 'num cut',np.sum(J<thJ), thJ)
-        J[J<thJ] = 0.
+        #J[J<thJ] = 0.
         
         #print(J[:4,:4])
         #plt.figure()

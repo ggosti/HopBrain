@@ -19,8 +19,13 @@ autapse = True
 randomize = False
 parcelsNames = ['Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_900Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_800Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_700Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
-                'Schaefer2018_800Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv']
+                'Schaefer2018_600Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_400Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_300Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_200Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_100Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv']
 
 
 strng = '' 

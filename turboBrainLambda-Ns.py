@@ -22,6 +22,7 @@ parcelsNames = ['Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroi
                 'Schaefer2018_800Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_700Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_600Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_500Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_400Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_300Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_200Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',

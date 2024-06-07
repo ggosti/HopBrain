@@ -83,5 +83,8 @@ and `binnedSd_std.npy`
 
 ## Generate plots
 
-The jupyter notebook `PlotData3.ipynb` allows to generate all plots.
+The jupyter notebook `Plot3D.ipynb` allows to generate the 3D paercel models.
+The jupyter notebook `PlotData3.ipynb` allows to generate the analysis plots.
+
+
 

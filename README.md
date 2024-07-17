@@ -13,7 +13,7 @@ runs = 1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False
-parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 ```
 The stady state are saved in `SRuns-autapse.csv` and in `lamdaValues-autapse.csv` are saved the labdas used in the simulations.
 
@@ -29,7 +29,7 @@ runs = 1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False
-parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 fitxlim = 3.5 
 nBins = 100
@@ -50,7 +50,7 @@ runs = 1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False
-parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 ```
 Line 54 is were thresholds are set 
 ```python
@@ -69,7 +69,7 @@ runs = 1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False
-parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 fitxlim = 3.5 
 nBins = 100

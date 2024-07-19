@@ -33,8 +33,8 @@ python makeBinnedSd.py
 ```
 the lines in the script from 36 to 43 allow you to change parameters.
 ```python
-runs = 1000#40
-passi = 100#200
+runs = 40 #1000#40
+passi = 100 #200
 autapse = True
 randomize = True#True #False
 parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
@@ -54,7 +54,7 @@ python turboBrainLambda-ThJ.py
 ```
 the lines in the script from 11 to 19 allow you to change parameters.
 ```python
-runs = 1000#40
+runs = 40 #1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False
@@ -73,7 +73,7 @@ python makeBinnedSd-ThJ.py
 ```
 the lines in the script from 36 to 43 allow you to change parameters.
 ```python
-runs = 1000#40
+runs = 40 #1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False

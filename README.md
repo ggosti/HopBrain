@@ -94,5 +94,11 @@ and `binnedSd_std.npy`
 The jupyter notebook `Plot3D.ipynb` allows to generate the 3D paercel models.
 The jupyter notebook `PlotData3.ipynb` allows to generate the analysis plots.
 
+## Citation
 
+If you find this project useful, please cite:
 
+> Giorgio Gosti, Sauro Succi, Giancarlo Ruocco. 
+> *Evidence of Scaling Regimes in the Hopfield Dynamics of Whole Brain Model*,
+> arXiv, 2024, https://arxiv.org/abs/2401.07538.
+>

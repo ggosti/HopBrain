@@ -1,7 +1,8 @@
 import os
 import subprocess
 
-urlbase = 'https://github.com/ThomasYeoLab/CBIG/blob/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/MNI/Centroid_coordinates/'
+#urlbase = 'https://github.com/ThomasYeoLab/CBIG/blob/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/MNI/Centroid_coordinates/'
+urlbase = 'https://raw.githubusercontent.com/ThomasYeoLab/CBIG/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/MNI/Centroid_coordinates/'#Schaefer2018_900Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv
 # List of parcellations to download
 parcellations = [
     'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',

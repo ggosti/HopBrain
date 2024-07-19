@@ -13,11 +13,11 @@ import json
 
 import turboBrainUtils as tb 
 
-runs = 1000#40
+runs = 40#1000#40
 passi = 100#200
 autapse = True
 randomize = False
-parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 strng = '' 
 if autapse: strng = strng+'-autapse'
@@ -131,7 +131,7 @@ for thJ in ths:
                 dilsRuns.append(dil)
                 #SList.append({'lambda':lambd,'thJ':thJ,'r':r,'dil':dil,'states':states[r,-1,:].tolist()})
         df2 = pd.DataFrame(SDictRunLambda)
-    df2.to_csv('SRuns'+strng+'-'+str(thJ)+'.csv', index=False)
+    df2.to_csv('data/SRuns'+strng+'-'+str(thJ)+'.csv', index=False)
         
 df0 = pd.DataFrame({'lambdas':lambdasRuns,'thsRuns':thsRuns,'dilsRuns':dilsRuns,'run':runsList})
 #df1 = pd.DataFrame(brsDict)
@@ -139,7 +139,7 @@ df0 = pd.DataFrame({'lambdas':lambdasRuns,'thsRuns':thsRuns,'dilsRuns':dilsRuns,
 
 
 
-df0.to_csv('lamdaValues'+strng+'.csv', index=False)
+df0.to_csv('data/lamdaValues'+strng+'.csv', index=False)
 #df1.to_csv('BdRuns'+strng+'.csv', index=False)
 #df2.to_csv('SRuns'+strng+'.csv', index=False)
 

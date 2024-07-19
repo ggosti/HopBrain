@@ -18,10 +18,19 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
     return BdRun
 
 runs = 40#1000#40
-passi = 100#200
+#passi = 100#200
 autapse = True
 randomize = False#True #False
-parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsNames = ['Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_900Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_800Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_700Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_600Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_500Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_400Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_300Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_200Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
+                'Schaefer2018_100Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv']
 
 fitxlim = 3.5 
 nBins = 100
@@ -29,41 +38,36 @@ nBins = 100
 strng = '' 
 if autapse: strng = strng+'-autapse'
 if randomize: strng = strng+'-randomizeJ'
-strng = strng+'-thJ'
+strng = strng+'-N'
 print(strng)
 
-# # Parcellizzazione
-# https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
-df = pd.read_csv(parcelsName)
-df.head()
-X = df['R']
-Y = df['A']
-Z = df['S']
-N=len(X)
+for parcelsName in parcelsNames:
+    # # Parcellizzazione
+    # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
+    df = pd.read_csv('Centroid_coordinates/'+parcelsName)
+    df.head()
+    X = df['R']
+    Y = df['A']
+    Z = df['S']
+    N=len(X)
 
-coords = np.array([X,Y,Z]).T
-dist = distance.cdist(coords, coords, 'euclidean')
-uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
+    coords = np.array([X,Y,Z]).T
+    dist = distance.cdist(coords, coords, 'euclidean')
+    uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
 
 
-h,bins,f=plt.hist(uniqDist,bins=nBins,histtype="step", density=True)
+    h,bins,f=plt.hist(uniqDist,bins=nBins,histtype="step", density=True)
 
-df = pd.read_csv('data/lamdaValues'+strng+'.csv')
-print('read lamdaValues'+strng+'.csv')
+    df = pd.read_csv('data/lamdaValues'+strng+'.csv')
+    print('read lamdaValues'+strng+'.csv')
 
-ths = np.unique(df['thsRuns'].values)
-print(ths)
-print([0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9])
-#ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9]
-
-for thJ in ths:
-    dfTh = df[df['thsRuns']==thJ]
-    lambdas = np.unique(dfTh['lambdas'].values)
+    dfN = df[df['N']==N]
+    lambdas = np.unique(dfN['lambdas'].values)
     #lambdas = np.unique(df['lambdas'].values)
     print('lambdas',len(lambdas))
     print(lambdas)
     
-    strngTemp = strng+'-'+str(thJ)
+    strngTemp = strng+'-'+str(N)
     print('read SRuns'+strngTemp+'.csv')
     df3 = pd.read_csv('data/SRuns'+strngTemp+'.csv')
     print('read SRuns'+strngTemp+'.csv',df3.shape)

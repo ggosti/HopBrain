@@ -17,11 +17,11 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
         BdRun.append(cors)
     return BdRun
 
-runs = 1000#40
+runs = 40 #1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False
-parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 fitxlim = 3.5 
 nBins = 100
@@ -47,12 +47,12 @@ uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
 
 h,bins,f=plt.hist(uniqDist,bins=nBins,histtype="step", density=True)
 
-df = pd.read_csv('lamdaValues'+strng+'.csv')
+df = pd.read_csv('data/lamdaValues'+strng+'.csv')
 print('read parametersRuns'+strng+'.csv')
 lambdas = np.unique(df['lambdas'].values)
 print(lambdas)
 
-df3 = pd.read_csv('SRuns'+strng+'.csv')
+df3 = pd.read_csv('data/SRuns'+strng+'.csv')
 print('read SRuns'+strng+'.csv',df3.shape)
 
 states = np.zeros((len(lambdas),runs,N))
@@ -158,7 +158,7 @@ print('make sd time',t1-t0)
 plt.show()
 
 
-np.save('binnedBd_mean'+strng,arBinnedBd_mean)
-np.save('binnedBd_std'+strng,arBinnedBd_std)
-np.save('binnedSd_mean'+strng,arBinnedSd_mean)
-np.save('binnedSd_std'+strng,arBinnedSd_std)
+np.save('data/binnedBd_mean'+strng,arBinnedBd_mean)
+np.save('data/binnedBd_std'+strng,arBinnedBd_std)
+np.save('data/binnedSd_mean'+strng,arBinnedSd_mean)
+np.save('data/binnedSd_std'+strng,arBinnedSd_std)

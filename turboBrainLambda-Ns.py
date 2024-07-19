@@ -13,7 +13,7 @@ import json
 
 import turboBrainUtils as tb 
 
-runs = 1000#40
+runs = 40#1000#40
 passi = 100#200
 autapse = True
 randomize = False
@@ -50,7 +50,7 @@ runsList = []
 for parcelsName in parcelsNames:
     # # Parcellizzazione
     # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
-    df = pd.read_csv(parcelsName)
+    df = pd.read_csv('Centroid_coordinates/'+parcelsName)
     df.head()
     X = df['R']
     Y = df['A']
@@ -138,7 +138,7 @@ for parcelsName in parcelsNames:
                 #dilsRuns.append(dil)
                 #SList.append({'lambda':lambd,'thJ':thJ,'r':r,'dil':dil,'states':states[r,-1,:].tolist()})
         df2 = pd.DataFrame(SDictRunLambda)
-    df2.to_csv('SRuns'+strng+'-'+str(N)+'.csv', index=False)
+    df2.to_csv('data/SRuns'+strng+'-'+str(N)+'.csv', index=False)
         
 df0 = pd.DataFrame({'lambdas':lambdasRuns,'N':Ns,'run':runsList})
 #df1 = pd.DataFrame(brsDict)
@@ -146,7 +146,7 @@ df0 = pd.DataFrame({'lambdas':lambdasRuns,'N':Ns,'run':runsList})
 
 
 
-df0.to_csv('lamdaValues'+strng+'.csv', index=False)
+df0.to_csv('data/lamdaValues'+strng+'.csv', index=False)
 #df1.to_csv('BdRuns'+strng+'.csv', index=False)
 #df2.to_csv('SRuns'+strng+'.csv', index=False)
 

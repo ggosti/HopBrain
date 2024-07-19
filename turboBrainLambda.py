@@ -12,11 +12,11 @@ import time
 
 import turboBrainUtils as tb 
 
-runs = 1000#40
+runs = 40#1000#40
 passi = 100#200
 autapse = True
 randomize = False#True #False
-parcelsName = 'Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
@@ -141,8 +141,8 @@ if autapse: strng = strng+'-autapse'
 if randomize: strng = strng+'-randomizeJ'
 print(strng)
 
-df0.to_csv('lamdaValues'+strng+'.csv', index=False)
+df0.to_csv('data/lamdaValues'+strng+'.csv', index=False)
 #df1.to_csv('BdRuns'+strng+'.csv', index=False)
-df2.to_csv('SRuns'+strng+'.csv', index=False)
+df2.to_csv('data/SRuns'+strng+'.csv', index=False)
 
 plt.show()

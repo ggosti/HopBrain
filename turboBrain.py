@@ -16,14 +16,14 @@ import time
 import turboBrainUtils as tb 
 
 
-runs = 1000#40#100#1000
+runs = 40#1000#40#100#1000
 passi = 100#200
 autapse = True
 randomize = False
 
 # # Parcellizzazione
 # https://www.sciencedirect.com/science/article/pii/S2211124720314601?via%3Dihub
-df = pd.read_csv('Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv')
+df = pd.read_csv('Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv')
 df.head()
 X = df['R']
 Y = df['A']
@@ -445,5 +445,5 @@ if True:
     #ax[0].plot(x, alpha[0]*x + alpha[1], '-g')
     #ax[0].text(4, 1, 'slope = '+"%.2f" % alpha[0], fontsize=8)
     #ax[0].legend()
-    plt.savefig('structure'+str(lamda)+'.pdf')
+    plt.savefig('figures/structure'+str(lamda)+'.pdf')
 plt.show()

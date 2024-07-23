@@ -20,7 +20,7 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
 runs = 40#1000#40
 #passi = 100#200
 autapse = True
-randomize = False#True #False
+randomize = False #True #False
 parcelsNames = ['Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_900Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',
                 'Schaefer2018_800Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv',

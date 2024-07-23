@@ -20,7 +20,7 @@ def computeBr(statesRun,uniqDist,iListList,jListList):
 runs = 40 #1000#40
 passi = 100#200
 autapse = True
-randomize = True#True #False
+randomize = False #True #False
 parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
 
 fitxlim = 3.5 

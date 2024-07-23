@@ -26,9 +26,9 @@ To run simulations run
 ```
 python turboBrainLambda.py
 ```
-the lines in the script from 11 to 19 allow you to change parameters.
+the lines in the script from 11 to 19 allow you to change parameters. Change N from 40 to 1000 to reproduce the papers results.
 ```python
-runs = 1000#40
+runs = 40 #1000#40
 passi = 100#200
 autapse = True
 randomize = True#True #False
@@ -42,7 +42,7 @@ To run simulations run
 ```
 python makeBinnedSd.py
 ```
-the lines in the script from 36 to 43 allow you to change parameters.
+the lines in the script from 36 to 43 allow you to change parameters. Change N from 40 to 1000 to reproduce the papers results.
 ```python
 runs = 40 #1000#40
 passi = 100 #200
@@ -63,7 +63,7 @@ To run simulations run cutting edges somaller than certain thresholds
 ```
 python turboBrainLambda-ThJ.py
 ```
-the lines in the script from 11 to 19 allow you to change parameters.
+the lines in the script from 11 to 19 allow you to change parameters. Change N from 40 to 1000 to reproduce the papers results.
 ```python
 runs = 40 #1000#40
 passi = 100#200
@@ -82,7 +82,7 @@ The stady state are saved in `SRuns-autapse-thJ-x.xx.csv` and in `lamdaValues-au
 ```
 python makeBinnedSd-ThJ.py
 ```
-the lines in the script from 36 to 43 allow you to change parameters.
+the lines in the script from 36 to 43 allow you to change parameters. Change N from 40 to 1000 to reproduce the papers results.
 ```python
 runs = 40 #1000#40
 passi = 100#200

@@ -113,3 +113,7 @@ If you find this project useful, please cite:
 > *Evidence of Scaling Regimes in the Hopfield Dynamics of Whole Brain Model*,
 > arXiv, 2024, https://arxiv.org/abs/2401.07538.
 >
+
+## DOI
+
+[![DOI](https://zenodo.org/badge/611266001.svg)](https://zenodo.org/doi/10.5281/zenodo.12799027)

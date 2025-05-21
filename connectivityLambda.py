@@ -13,8 +13,6 @@ import networkx as nx
 
 import turboBrainUtils as tb 
 
-runs = 40#1000#40
-passi = 100#200
 autapse = True
 randomize = False #True #False #True 
 parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'

@@ -100,6 +100,20 @@ ths = [0.0001,0.0002,0.0004,0.001,0.002,0.004,0.01,0.02,0.04,.1,.2,.4,.8,.9]
 Binned strucutre function mean on runs and the standard deviation are saved as files `binnedSd_mean.npy`
 and `binnedSd_std.npy`
 
+## Make plots for degree analysis
+
+For producing degree analysis plots run:
+```
+python connectivityLambda.py
+```
+the lines in the script from 16 to 18 allow you to change parameters.
+```
+autapse = True
+randomize = False #True #False #True 
+parcelsName = 'Centroid_coordinates/Schaefer2018_1000Parcels_17Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
+```
+
+
 ## Generate plots
 
 The jupyter notebook `Plot3D.ipynb` allows to generate the 3D paercel models.

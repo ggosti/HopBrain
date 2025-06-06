@@ -29,15 +29,58 @@ N=len(X)
 coords = np.array([X,Y,Z]).T
 dist = distance.cdist(coords, coords, 'euclidean')
 uniqDist,iListList,jListList = tb.sortIJbyDist(dist,N)
-plt.figure()
-h,bins,f=plt.hist(uniqDist,bins=100)
-plt.title('unique distance')
 
 lamb = 0.18#0.18
 J = tb.makeJ(dist,lamb,autapse,randomize)
 
 #tb.plotInitalJ(X, Y, Z,dist,J)
 tb.plotInitalJ(X, Y, Z,dist,J,uniqDist)
+
+
+fig0, [[axa,axb],[axc,axd]] = plt.subplots(2,2,figsize=(12,12))
+
+distsList = dist[np.triu_indices(N, k = 1)]
+print(np.min(distsList),len(distsList))
+print('indices',np.triu_indices(N, k = 1))
+h,bins,f= axa.hist(distsList,bins=100)
+axa.set_xlabel(r'$d_{ij}$ (mm)')
+axa.set_ylabel('frequency')
+axa.set_xlim((0,180))
+#axa.set_ylim((0,120))
+axa.set_box_aspect(1)
+axa.set_title('A) Distances histogram')
+
+for delta in [50, 7, 5.55, 4]:
+    xs = np.arange(distsList.min(),distsList.max(),0.1)
+    ys = np.exp(-xs/delta )
+    axb.plot(xs,ys,label = delta)
+    axb.set_xlabel(r'$J_{ij}$')
+    axb.set_ylabel(r'$d_{ij}$ (mm)')
+    axb.legend(title = r'decay length $\delta$ (mm)')
+    axb.set_box_aspect(1)
+    axb.set_title('B) Exponetial distance rule')
+
+    JsList = np.exp(-distsList/delta )
+    print(np.max(JsList),np.exp(-lamb*np.min(distsList) ),lamb)
+    h,bins,f= axc.hist(JsList,bins=100, density=True,label = delta)
+    axc.set_xlabel(r'$J_{ij}$')
+    axc.set_ylabel('frequency')
+    axc.legend(title = r'decay length $\delta$ (mm)')
+    axc.set_ylim((0,4))
+    axc.set_box_aspect(1)
+    axc.set_title('C) Couplings histogram')
+    
+    h,bins,f= axd.hist(JsList,bins=200, density=True, cumulative=True,histtype='step',label = delta)
+    axd.set_xlabel(r'$J_{ij}$')
+    axd.set_ylabel('cum. frequency')
+    axd.legend(title = r'decay length $\delta$ (mm)')
+    axd.set_box_aspect(1)
+    axd.set_xlim((-0.05,0.30))
+    axd.set_title('D) Couplings cumulative distribution')
+
+fig0.tight_layout()
+
+plt.show()
 
 fig0,ax0 = plt.subplots(1,figsize=(15,5))
 degreeCents = []

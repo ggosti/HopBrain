@@ -120,11 +120,13 @@ def plotInitalJ(X, Y, Z,dist,J,uniqDist):
     ax.set_zlabel('S (mm)')
     
     ax = fig.add_subplot(2, 2, 2)
-    h,bins,f= ax.hist(uniqDist,bins=100)
+    N = len(X)
+    distsList = dist[np.triu_indices(N, k = 1)]
+    h,bins,f= ax.hist(distsList,bins=100)
     ax.set_xlabel(r'$d_{ij}$')
     ax.set_ylabel('frequency')
     ax.set_xlim((0,180))
-    ax.set_ylim((0,120))
+    #ax.set_ylim((0,120))
     ax.set_box_aspect(1)
     #ax.set_title('unique distance')
     
